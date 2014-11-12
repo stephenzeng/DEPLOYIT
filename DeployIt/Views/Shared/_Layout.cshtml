@@ -8,31 +8,38 @@
         @Scripts.Render("~/bundles/modernizr")
     </head>
     <body>
-        <header>
-            <div class="content-wrapper">
-                <div class="float-left">
-                    <p class="site-title">@Html.ActionLink("DEPLOYIT", "Index", "Home")</p>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("DEPLOYIT", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
                 </div>
-                <div class="float-right">
-                    <nav>
-                        <ul id="menu">
-                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                            <li>@Html.ActionLink("Settings", "Index", "Settings")</li>
-                        </ul>
-                    </nav>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                        <li>@Html.ActionLink("Settings", "Index", "Settings")</li>
+                    </ul>
                 </div>
             </div>
-        </header>
-        <div id="body">
-            @RenderSection("featured", required: false)
-            <section class="content-wrapper main-content clear-fix">
-                @Html.Partial("_MessagePanel")
+        </div>
+        <div id="contentContainer">
+            <div style="background-color: #2d4b73; padding-top: 30px; padding-bottom: 30px;font-family: Tahoma;">
+                <div class="container">
+                    <div style="font-size: 42px;">
+                        <span style="color: black;">DEPLOYIT</span>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("_MessagePanel")
+            <div class="container body-content" style="padding-bottom: 80px;">
                 @RenderBody()
-            </section>
+            </div>
         </div>
         <footer>
-            <div class="content-wrapper">
-            </div>
         </footer>
 
         @Scripts.Render("~/bundles/jquery")

@@ -1,21 +1,27 @@
-﻿@using DeployIt.Models
+﻿@using DeployIt.Common
+@using DeployIt.Models
 @model DeployBuildModel
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Choose a project to deploye";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var projectList = ViewBag.ProjectList as IEnumerable<ProjectConfig> ?? Enumerable.Empty<ProjectConfig>();
     var lastBuildList = ViewBag.LastBuildList as IEnumerable<BuildInfoModel> ?? Enumerable.Empty<BuildInfoModel>();
     var redirectPage = string.Format("location.href = '{0}Home/Index/'+this.options[this.selectedIndex].value;", @Url.Content("~/"));
+    var currentProjectId = ViewContext.RouteData.Values["id"].ToNullable<int>();
 }
+
+<h1 class="page-header">@ViewBag.Title</h1>
 
 @using (Html.BeginForm("Deploy", "Home", FormMethod.Post, new { role = "form", @class = "form-horizontal" }))
 {
     <div class="form-group">
         <label class="control-label col-md-3">Project</label>
         <div class="col-md-3">
-            @Html.DropDownList("Project", projectList.Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString() }), new { @onchange = redirectPage, @class = "form-control" })
+            @Html.DropDownList("Project", 
+                projectList.Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString(), Selected = p.Id == currentProjectId}), 
+                new { @onchange = redirectPage, @class = "form-control" })
         </div>
     </div>
     
