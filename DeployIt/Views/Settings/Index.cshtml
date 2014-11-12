@@ -1,0 +1,42 @@
+﻿@model IEnumerable<DeployIt.Models.ProjectConfig>
+
+@{
+    ViewBag.Title = "Project Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">@ViewBag.Title</div>
+    <div class="panel-body">
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>TFS Project Name</th>
+                    <th>Branch</th>
+                    <th>Version Key Name</th>
+                    <th>Source Sub Folder</th>
+                    <th>Destination Root Location</th>
+                    <th>Project Folder</th>
+                    <th>Last Deployed Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var build in Model)
+                {
+                    <tr>
+                        <td>@build.Name</td>
+                        <td>@build.TfsProjectName</td>
+                        <td>@build.Branch</td>
+                        <td>@build.VersionKeyName</td>
+                        <td>@build.SourceSubFolder</td>
+                        <td>@build.DestinationRootLocation</td>
+                        <td>@build.DetinationProjectFolder</td>
+                        <td>@build.LastDeployedAt</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

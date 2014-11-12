@@ -1,0 +1,87 @@
+﻿@using DeployIt.Models
+@model DeployBuildModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var projectList = ViewBag.ProjectList as IEnumerable<ProjectConfig> ?? Enumerable.Empty<ProjectConfig>();
+    var lastBuildList = ViewBag.LastBuildList as IEnumerable<BuildInfoModel> ?? Enumerable.Empty<BuildInfoModel>();
+    var redirectPage = string.Format("location.href = '{0}Home/Index/'+this.options[this.selectedIndex].value;", @Url.Content("~/"));
+}
+
+@using (Html.BeginForm("Deploy", "Home", FormMethod.Post, new { role = "form", @class = "form-horizontal" }))
+{
+    <div class="form-group">
+        <label class="control-label col-md-3">Project</label>
+        <div class="col-md-3">
+            @Html.DropDownList("Project", projectList.Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString() }), new { @onchange = redirectPage, @class = "form-control" })
+        </div>
+    </div>
+    
+    <div class="form-group">
+        @Html.LabelFor(m => m.SourceLocation, new { @class = "col-md-3 control-label" })
+        <div class="col-md-7">
+            @Html.TextBoxFor(m => m.SourceLocation, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.DestinationLocation, new { @class = "col-md-3 control-label" })
+        <div class="col-md-7">
+            @Html.TextBoxFor(m => m.DestinationLocation, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.CurrentVersion, new { @class = "col-md-3 control-label" })
+        <div class="col-md-3">
+            @Html.TextBoxFor(m => m.CurrentVersion, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.NextVersion, new { @class = "col-md-3 control-label" })
+        <div class="col-md-3">
+            @Html.TextBoxFor(m => m.NextVersion, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            <button type="submit" class="btn btn-primary pull-right" style="width: 30%;">Deploy the latest build</button>
+        </div>
+    </div>
+}
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">Lastest build history</div>
+    <div class="panel-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Branch</th>
+                    <th>Build Number</th>
+                    <th>Status</th>
+                    <th>Finish Time</th>
+                    <th>Requested By</th>
+                    <th>Changeset</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var build in lastBuildList)
+                {
+                    <tr>
+                        <td>@build.Project</td>
+                        <td>@build.Branch</td>
+                        <td>@build.BuildNumber</td>
+                        <td>@build.Status</td>
+                        <td>@build.FinishTime</td>
+                        <td>@build.RequestedBy</td>
+                        <td>@build.Changeset</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
