@@ -18,5 +18,20 @@ namespace DeployIt.Controllers
         {
             return new HttpStatusCodeResult(304);
         }
+
+        protected void ShowInfoMessage(string message)
+        {
+            ViewBag.InfoMessage = message;
+        }
+
+        protected void ShowWarningMessage(string message)
+        {
+            ViewBag.WarningMessage = message;
+        }
+
+        protected void ShowErrorMessage(string message)
+        {
+            ViewBag.ErrorMessage = message;
+        }
     }
 }

@@ -1,0 +1,20 @@
+﻿@if (!string.IsNullOrEmpty(ViewBag.InfoMessage))
+{
+    <div class="alert alert-info alert-dismissible" role="alert">
+        @ViewBag.InfoMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.WarningMessage))
+{
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        @ViewBag.WarningMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}

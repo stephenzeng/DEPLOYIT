@@ -26,10 +26,7 @@
         <div id="body">
             @RenderSection("featured", required: false)
             <section class="content-wrapper main-content clear-fix">
-                <div class="alert alert-danger" role="alert">
-                    @ViewBag.ErrorMessage
-                </div>
-
+                @Html.Partial("_MessagePanel")
                 @RenderBody()
             </section>
         </div>

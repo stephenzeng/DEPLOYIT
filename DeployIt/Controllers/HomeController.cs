@@ -47,7 +47,7 @@ namespace DeployIt.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.StackTrace;
+                ShowErrorMessage(ex.Message);
             }
 
             return View(model);
@@ -81,9 +81,5 @@ namespace DeployIt.Controllers
 
             return string.Join(".", numbers);
         }
-
-        
-
-        
     }
 }
