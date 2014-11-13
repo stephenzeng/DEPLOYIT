@@ -38,5 +38,6 @@ namespace DeployIt.Models
 
         public DateTime LastDeployedAt { get; set; }
         public string VersionKeyName { get; set; }
+        public string Project { get; set; }
     }
 }

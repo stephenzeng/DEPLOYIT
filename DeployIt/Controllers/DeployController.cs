@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using DeployIt.Common;
 using DeployIt.Hubs;
 using DeployIt.Models;
+using Microsoft.VisualBasic.FileIO;
 
 namespace DeployIt.Controllers
 {
@@ -10,15 +13,76 @@ namespace DeployIt.Controllers
     {
         public HttpResponseMessage Get()
         {
-            HubContext.Clients.All.broadcast(string.Format("Get: The server time is {0}", DateTime.Now));
+            NotifyAndLog("Get: The server time is {0}", DateTime.Now);
 
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
         public HttpResponseMessage Post(DeployBuildModel model)
         {
-            HubContext.Clients.All.broadcast(string.Format("Post: The server time is {0}", DateTime.Now));
+            try
+            {
+                if (model == null || string.IsNullOrEmpty(model.Project))
+                {
+                    NotifyAndLog("Deployment request is rejected because of invalid data");
+                    return new HttpResponseMessage(HttpStatusCode.NotAcceptable);
+                }
 
-            return new HttpResponseMessage(HttpStatusCode.OK);
+                NotifyAndLog("Deployment request received for project '{0}'", model.Project);
+                ProcessDeployment(model);
+
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                NotifyAndLog(ex.Message);
+                NotifyAndLog(ex.StackTrace);
+                //todo: rollback process
+
+                return new HttpResponseMessage(HttpStatusCode.ExpectationFailed);
+            }
+        }
+
+        private void ProcessDeployment(DeployBuildModel model)
+        {
+            //Backup
+            var backupFolder = Path.Combine(model.DestinationRootLocation, "_Backup",
+                string.Format("{0}_{1}", model.DestinationProjectFolder, DateTime.Now.ToString("yyyyMMdd_hhmmss")));
+            var projectPath = Path.Combine(model.DestinationRootLocation, model.DestinationProjectFolder);
+
+            NotifyAndLog("Copying folder {0} to {1}...", projectPath, backupFolder);
+            FileSystem.CopyDirectory(projectPath, backupFolder);
+
+            //Copy files to project folder
+            var source = Path.Combine(model.BuildDropLocation, model.PublishedWebsiteFolder);
+
+            NotifyAndLog("Deploying files from folder {0} to {1}...", source, projectPath);
+            FileSystem.CopyDirectory(source, projectPath, true);
+
+            //copy web.config
+            var sourceConfig = Path.Combine(backupFolder, "Web.config");
+            var destConfig = Path.Combine(projectPath, "Web.config");
+
+            NotifyAndLog("Copying {0} to {1}...", sourceConfig, destConfig);
+            FileSystem.CopyFile(sourceConfig, destConfig, true);
+
+            //update version number
+            NotifyAndLog("Update application version number [{0}] to {1}", model.VersionKeyName, model.NextVersion);
+            Helper.SetVersionNumber(destConfig, model.VersionKeyName, model.NextVersion);
+
+            NotifyAndLog("Deployment process completed");
+        }
+
+        private void NotifyAndLog(string message, params object[] args)
+        {
+            var text = string.Format(message, args);
+
+            Broadcast(text);
+            DocumentSession.Store(new DeploymentLog
+            {
+                User = User.Identity.Name,
+                LogTime = DateTime.Now,
+                Description = text,
+            });
         }
     }
 }
