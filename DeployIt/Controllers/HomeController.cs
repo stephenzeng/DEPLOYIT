@@ -31,15 +31,18 @@ namespace DeployIt.Controllers
                     var currentVersion = Helper.ReadVersionNumber(webConfig, projectConfig.VersionKeyName);
                     var nextVersion = CalculateNextVersionNumber(currentVersion);
 
-                    model.DestinationLocation = Path.Combine(projectConfig.DestinationRootLocation,
-                        projectConfig.DetinationProjectFolder);
+                    model.DestinationRootLocation = projectConfig.DestinationRootLocation;
+                    model.DestinationProjectFolder = projectConfig.DetinationProjectFolder;
+                    model.VersionKeyName = projectConfig.VersionKeyName;
                     model.CurrentVersion = currentVersion;
                     model.NextVersion = nextVersion;
                     model.LastDeployedAt = projectConfig.LastDeployedAt;
-
+                    
                     if (buildList.Any())
                     {
-                        model.SourceLocation = buildList.First().DropLocation;
+                        var build = buildList.First();
+                        model.BuildDropLocation = build.DropLocation;
+                        model.PublishedWebsiteFolder = projectConfig.SourceSubFolder;
                     }
 
                     ViewBag.LastBuildList = buildList;
@@ -56,20 +59,23 @@ namespace DeployIt.Controllers
         [HttpPost]
         public ActionResult Deploy(DeployBuildModel model)
         {
-            ////Backup folder
-            //var backupFolder = string.Format("{0}_{1}", model.DestinationLocation, DateTime.Now.ToString("ddMMyyyy"));
-            //FileSystem.CopyDirectory(model.DestinationLocation, backupFolder);
+            //Backup project folder
+            var backupFolder = Path.Combine(model.DestinationRootLocation, "_Backup",
+                string.Format("{0}_{1}", model.DestinationProjectFolder, DateTime.Now.ToString("ddMMyyyy")));
+            var projectPath = Path.Combine(model.DestinationRootLocation, model.DestinationProjectFolder);
+            FileSystem.CopyDirectory(projectPath, backupFolder);
 
-            ////Copy files to dest
-            //var source = Path.Combine(model.SourceLocation, _sourceSubFolder);
-            //FileSystem.CopyDirectory(source, model.DestinationLocation, true);
+            //Copy files to project folder
+            var source = Path.Combine(model.BuildDropLocation, model.PublishedWebsiteFolder);
+            FileSystem.CopyDirectory(source, projectPath, true);
 
-            ////copy web.config
-            //FileSystem.CopyFile(Path.Combine(backupFolder, "Web.config"), Path.Combine(model.DestinationLocation, "Web.config"), true);
+            //copy web.config
+            var sourceConfig = Path.Combine(backupFolder, "Web.config");
+            var destConfig = Path.Combine(projectPath, "Web.config");
+            FileSystem.CopyFile(sourceConfig, destConfig, true);
 
-            ////update version number
-            //var configFile = Path.Combine(model.DestinationLocation, "Web.config");
-            //SetVersionNumber(configFile, model.NextVersion);
+            //update version number
+            Helper.SetVersionNumber(destConfig, model.VersionKeyName, model.NextVersion);
 
             return View("Index");
         }

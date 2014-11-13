@@ -19,25 +19,39 @@
         <div class="col-md-3">
             @Html.DropDownList("Project", 
                 projectList.Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString(), Selected = p.Id == currentProjectId}), 
+                "Select a project",
                 new { @onchange = redirectPage, @class = "form-control" })
         </div>
     </div>
     
     <div class="form-group">
-        @Html.LabelFor(m => m.SourceLocation, new { @class = "col-md-3 control-label" })
+        @Html.LabelFor(m => m.BuildDropLocation, new { @class = "col-md-3 control-label" })
         <div class="col-md-7">
-            @Html.TextBoxFor(m => m.SourceLocation, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.BuildDropLocation, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.DestinationLocation, new { @class = "col-md-3 control-label" })
+        @Html.LabelFor(m => m.PublishedWebsiteFolder, new { @class = "col-md-3 control-label" })
         <div class="col-md-7">
-            @Html.TextBoxFor(m => m.DestinationLocation, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.PublishedWebsiteFolder, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.DestinationRootLocation, new { @class = "col-md-3 control-label" })
+        <div class="col-md-7">
+            @Html.TextBoxFor(m => m.DestinationRootLocation, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.DestinationProjectFolder, new { @class = "col-md-3 control-label" })
+        <div class="col-md-7">
+            @Html.TextBoxFor(m => m.DestinationProjectFolder, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.CurrentVersion, new { @class = "col-md-3 control-label" })
         <div class="col-md-3">
+            @Html.HiddenFor(m => m.VersionKeyName)
             @Html.TextBoxFor(m => m.CurrentVersion, new { @class = "form-control" })
         </div>
     </div>

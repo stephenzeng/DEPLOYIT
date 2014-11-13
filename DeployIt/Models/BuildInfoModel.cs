@@ -18,11 +18,17 @@ namespace DeployIt.Models
 
     public class DeployBuildModel
     {
-        [DisplayName("Source location")]
-        public string SourceLocation { get; set; }
+        [DisplayName("Build drop location")]
+        public string BuildDropLocation { get; set; }
+
+        [DisplayName("Published website folder")]
+        public string PublishedWebsiteFolder { get; set; }
 
         [DisplayName("Destination location")]
-        public string DestinationLocation { get; set; }
+        public string DestinationRootLocation { get; set; }
+
+        [DisplayName("Destination project folder")]
+        public string DestinationProjectFolder { get; set; }
 
         [DisplayName("Current version")]
         public string CurrentVersion { get; set; }
@@ -31,5 +37,6 @@ namespace DeployIt.Models
         public string NextVersion { get; set; }
 
         public DateTime LastDeployedAt { get; set; }
+        public string VersionKeyName { get; set; }
     }
 }
