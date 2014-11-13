@@ -4,7 +4,6 @@
 
 @{
     ViewBag.Title = "Home";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 
     var projectList = ViewBag.ProjectList as IEnumerable<ProjectConfig> ?? Enumerable.Empty<ProjectConfig>();
     var lastBuildList = ViewBag.LastBuildList as IEnumerable<BuildInfoModel> ?? Enumerable.Empty<BuildInfoModel>();
@@ -17,7 +16,7 @@
     <div class="form-group">
         <label class="control-label col-md-3">Project</label>
         <div class="col-md-3">
-            @Html.DropDownList("rojectDropDownList", 
+            @Html.DropDownList("projectDropDownList", 
                 projectList.Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString(), Selected = p.Id == currentProjectId}), 
                 "Select a project",
                 new { @onchange = redirectPage, @class = "form-control" })
@@ -76,7 +75,7 @@
         $(function () {
             var button = $('#submitButton');
 
-            if ($('#rojectDropDownList').val() == '') {
+            if ($('#projectDropDownList').val() == '') {
                 button.attr('disabled', 'disabled');
             } else {
                 button.removeAttr("disabled");

@@ -1,28 +1,40 @@
 ﻿@{
     ViewBag.Title = "Test";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<button class="btn btn-lg" onclick="getCurrentTime();">Click me</button>
-<div id="infoPanel" class="alert alert-info margin-top-5">
+<button class="btn btn-lg" onclick="getCurrentTime();">Get time</button>
+<button class="btn btn-lg" onclick="postCurrentTime();">Post time</button>
+<div id="infoPanel" class="alert alert-info margin-top-5 console-panel">
   
 </div>
 
 @section scripts
 {
     <script>
-        var hub = $.connection.message;
-        
-        hub.send = function (message) {
-            console.log(message);
-            $('#infoPanel').append('<p>' + message + '</p>');
+        $(function() {
+            var hub = $.connection.notificationHub;
+            hub.client.broadcast = function(message) {
+                console.log(message);
+                $('#infoPanel').append('<p>' + message + '</p>');
+            }
+
+            $.connection.hub.logging = true;
+            $.connection.hub.start();
+        });
+
+        var getCurrentTime = function() {
+            $.ajax({
+                url: '/api/deploy/',
+                success: function() {
+                    $('#infoPanel').append('<p>ok</p>');
+                }
+            });
         }
 
-        $.connection.hub.start();
-
-        var getCurrentTime = function () {
+        var postCurrentTime = function () {
             $.ajax({
-                url: '/api/test/',
+                type: 'POST',
+                url: '/api/deploy/',
                 success: function () {
                     $('#infoPanel').append('<p>ok</p>');
                 }
