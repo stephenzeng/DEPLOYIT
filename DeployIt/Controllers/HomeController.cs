@@ -59,25 +59,34 @@ namespace DeployIt.Controllers
         [HttpPost]
         public ActionResult Deploy(DeployBuildModel model)
         {
-            //Backup project folder
-            var backupFolder = Path.Combine(model.DestinationRootLocation, "_Backup",
-                string.Format("{0}_{1}", model.DestinationProjectFolder, DateTime.Now.ToString("yyyyMMdd_hhmmss")));
-            var projectPath = Path.Combine(model.DestinationRootLocation, model.DestinationProjectFolder);
-            FileSystem.CopyDirectory(projectPath, backupFolder);
+            try
+            {
+                //Backup project folder
+                var backupFolder = Path.Combine(model.DestinationRootLocation, "_Backup",
+                    string.Format("{0}_{1}", model.DestinationProjectFolder, DateTime.Now.ToString("yyyyMMdd_hhmmss")));
+                var projectPath = Path.Combine(model.DestinationRootLocation, model.DestinationProjectFolder);
+                FileSystem.CopyDirectory(projectPath, backupFolder);
 
-            //Copy files to project folder
-            var source = Path.Combine(model.BuildDropLocation, model.PublishedWebsiteFolder);
-            FileSystem.CopyDirectory(source, projectPath, true);
+                //Copy files to project folder
+                var source = Path.Combine(model.BuildDropLocation, model.PublishedWebsiteFolder);
+                FileSystem.CopyDirectory(source, projectPath, true);
 
-            //copy web.config
-            var sourceConfig = Path.Combine(backupFolder, "Web.config");
-            var destConfig = Path.Combine(projectPath, "Web.config");
-            FileSystem.CopyFile(sourceConfig, destConfig, true);
+                //copy web.config
+                var sourceConfig = Path.Combine(backupFolder, "Web.config");
+                var destConfig = Path.Combine(projectPath, "Web.config");
+                FileSystem.CopyFile(sourceConfig, destConfig, true);
 
-            //update version number
-            Helper.SetVersionNumber(destConfig, model.VersionKeyName, model.NextVersion);
+                //update version number
+                Helper.SetVersionNumber(destConfig, model.VersionKeyName, model.NextVersion);
 
-            return View("Index");
+                ViewBag.InfoMessage = "Deployed successsfully";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+            }
+
+            return View();
         }
 
         private static string CalculateNextVersionNumber(string versionNumber)
