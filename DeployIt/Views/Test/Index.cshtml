@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Test";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<button class="btn btn-lg" onclick="getCurrentTime();">Click me</button>
+<div id="infoPanel" class="alert alert-info margin-top-5">
+  
+</div>
+
+@section scripts
+{
+    <script>
+        var hub = $.connection.message;
+        
+        hub.send = function (message) {
+            console.log(message);
+            $('#infoPanel').append('<p>' + message + '</p>');
+        }
+
+        $.connection.hub.start();
+
+        var getCurrentTime = function () {
+            $.ajax({
+                url: '/api/test/',
+                success: function () {
+                    $('#infoPanel').append('<p>ok</p>');
+                }
+            });
+        }
+
+    </script>
+}

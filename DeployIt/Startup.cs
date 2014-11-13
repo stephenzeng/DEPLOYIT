@@ -1,4 +1,7 @@
-﻿using Owin;
+﻿using Microsoft.Owin;
+using Owin;
+
+[assembly: OwinStartup(typeof(DeployIt.Startup))]
 
 namespace DeployIt
 {

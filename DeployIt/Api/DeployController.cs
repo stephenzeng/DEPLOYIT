@@ -1,13 +1,10 @@
-﻿using System;
-using System.IO;
+using System;
 using System.Web.Http;
-using DeployIt.Common;
 using DeployIt.Hubs;
 using DeployIt.Models;
 using Microsoft.AspNet.SignalR;
-using Microsoft.VisualBasic.FileIO;
 
-namespace DeployIt.Controllers
+namespace DeployIt.Api
 {
     public class DeployController : ApiController
     {
@@ -15,6 +12,11 @@ namespace DeployIt.Controllers
         {
             var hub = GlobalHost.ConnectionManager.GetHubContext<MessageHub>();
             hub.Clients.All.addNewMessageToPage("A test message from deploy controller");
+        }
+
+        public DateTime GetServerTime()
+        {
+            return DateTime.Now;
         }
     }
 }
