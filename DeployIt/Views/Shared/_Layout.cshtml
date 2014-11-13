@@ -8,7 +8,7 @@
         @Scripts.Render("~/bundles/modernizr")
     </head>
     <body>
-        <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar navbar-fixed-top site-header">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -19,7 +19,7 @@
                     @Html.ActionLink("DEPLOYIT", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
                 </div>
                 <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
+                    <ul class="nav navbar-nav pull-right">
                         <li>@Html.ActionLink("Home", "Index", "Home")</li>
                         <li>@Html.ActionLink("Settings", "Index", "Settings")</li>
                     </ul>
@@ -27,15 +27,9 @@
             </div>
         </div>
         <div id="contentContainer">
-            <div style="background-color: #2d4b73; padding-top: 30px; padding-bottom: 30px;font-family: Tahoma;">
-                <div class="container">
-                    <div style="font-size: 42px;">
-                        <span style="color: black;">DEPLOYIT</span>
-                    </div>
-                </div>
-            </div>
-            @Html.Partial("_MessagePanel")
-            <div class="container body-content" style="padding-bottom: 80px;">
+            <div class="container body-content">
+                @Html.Partial("_MessagePanel")
+                <h3 class="page-header">@ViewBag.Title</h3>
                 @RenderBody()
             </div>
         </div>
@@ -43,6 +37,7 @@
         </footer>
 
         @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
         @RenderSection("scripts", required: false)
     </body>
 </html>

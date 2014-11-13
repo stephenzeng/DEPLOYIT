@@ -3,7 +3,7 @@
 @model DeployBuildModel
 
 @{
-    ViewBag.Title = "Choose a project to deploye";
+    ViewBag.Title = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var projectList = ViewBag.ProjectList as IEnumerable<ProjectConfig> ?? Enumerable.Empty<ProjectConfig>();
@@ -11,8 +11,6 @@
     var redirectPage = string.Format("location.href = '{0}Home/Index/'+this.options[this.selectedIndex].value;", @Url.Content("~/"));
     var currentProjectId = ViewContext.RouteData.Values["id"].ToNullable<int>();
 }
-
-<h1 class="page-header">@ViewBag.Title</h1>
 
 @using (Html.BeginForm("Deploy", "Home", FormMethod.Post, new { role = "form", @class = "form-horizontal" }))
 {

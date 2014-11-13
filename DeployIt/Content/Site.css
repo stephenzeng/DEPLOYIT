@@ -29,3 +29,16 @@ textarea {
     margin: 10px;
     font-size: 18px;
 }
+
+.site-header {
+    background-color: #ddd;
+    color: white;
+}
+
+.site-header a {
+    color: #666;
+}
+
+.margin-top-5 {
+    margin-top: 5px;
+}
