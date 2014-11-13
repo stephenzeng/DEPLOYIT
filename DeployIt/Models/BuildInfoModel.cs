@@ -18,10 +18,10 @@ namespace DeployIt.Models
 
     public class DeployBuildModel
     {
-        [DisplayName("Build drop location")]
+        [DisplayName("Last build drop location")]
         public string BuildDropLocation { get; set; }
 
-        [DisplayName("Published website folder")]
+        [DisplayName("Website build drop folder")]
         public string PublishedWebsiteFolder { get; set; }
 
         [DisplayName("Destination location")]

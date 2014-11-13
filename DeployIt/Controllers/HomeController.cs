@@ -61,7 +61,7 @@ namespace DeployIt.Controllers
         {
             //Backup project folder
             var backupFolder = Path.Combine(model.DestinationRootLocation, "_Backup",
-                string.Format("{0}_{1}", model.DestinationProjectFolder, DateTime.Now.ToString("ddMMyyyy")));
+                string.Format("{0}_{1}", model.DestinationProjectFolder, DateTime.Now.ToString("yyyyMMdd_hhmmss")));
             var projectPath = Path.Combine(model.DestinationRootLocation, model.DestinationProjectFolder);
             FileSystem.CopyDirectory(projectPath, backupFolder);
 
