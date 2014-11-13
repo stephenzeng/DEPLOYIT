@@ -287,6 +287,8 @@
     <Content Include="Views\Home\Deploy.cshtml" />
     <Content Include="Views\Test\Index.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Settings\Add.cshtml" />
+    <Content Include="Views\Settings\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

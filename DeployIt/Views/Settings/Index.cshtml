@@ -4,13 +4,19 @@
     ViewBag.Title = "Project Settings";
 }
 
-<div class="panel panel-default">
-    <div class="panel-heading">@ViewBag.Title</div>
-    <div class="panel-body">
+<div class="clearfix">
+    @Html.ActionLink("Add a project settings", "Add", "Settings", null, new { @class = "btn btn-default pull-right" })
+</div>
 
+<div class="panel panel-default margin-top-5">
+    <div class="panel-heading">
+        <strong>@ViewBag.Title</strong>
+    </div>
+    <div class="panel-body">
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Project</th>
                     <th>TFS Project Name</th>
                     <th>Branch</th>
@@ -24,6 +30,11 @@
                 @foreach (var build in Model)
                 {
                     <tr>
+                        <td>
+                            <a href="@Url.Action("Edit", "Settings", new{build.Id}, null)">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+                        </td>
                         <td>@build.Name</td>
                         <td>@build.TfsProjectName</td>
                         <td>@build.Branch</td>

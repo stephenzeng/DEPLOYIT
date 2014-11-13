@@ -1,5 +1,9 @@
+using System;
+using System.Net;
+using System.Net.Http;
 using System.Web.Mvc;
 using DeployIt.Models;
+using Raven.Client.Linq;
 
 namespace DeployIt.Controllers
 {
@@ -7,27 +11,74 @@ namespace DeployIt.Controllers
     {
         public ActionResult Index()
         {
-            var list = DocumentSession.Query<ProjectConfig>();
+            var list = DocumentSession.Query<ProjectConfig>()
+                .OrderByDescending(c => c.Id);
 
             return View(list);
         }
 
-        public ActionResult Test()
+        [HttpGet]
+        public ActionResult Add()
         {
-            var config = new ProjectConfig
-            {
-                Name = "DMS",
-                TfsProjectName = "DSC.DMS",
-                Branch = "DMS-Main",
-                VersionKeyName = "Version",
-                SourceSubFolder = "",
-                DestinationRootLocation = "",
-                DetinationProjectFolder = "DMS_Main",
-            };
-
-            DocumentSession.Store(config);
-
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult Add(ProjectConfig config)
+        {
+            try
+            {
+                DocumentSession.Store(config);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message);
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            var config = DocumentSession.Load<ProjectConfig>(id);
+            return View(config);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(ProjectConfig config)
+        {
+            try
+            {
+                DocumentSession.Store(config);
+                ShowInfoMessage("Settings saved successfully");
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message);
+            }
+
+            return View(config);
+        }
+
+        [HttpPost]
+        public HttpResponseMessage Delete(int id)
+        {
+            try
+            {
+                var config = DocumentSession.Load<ProjectConfig>(id);
+                DocumentSession.Delete(config);
+
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                return response;
+            }
         }
     }
 }

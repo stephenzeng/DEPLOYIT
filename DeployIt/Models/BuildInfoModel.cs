@@ -36,7 +36,7 @@ namespace DeployIt.Models
         [DisplayName("Next version")]
         public string NextVersion { get; set; }
 
-        public DateTime LastDeployedAt { get; set; }
+        public DateTime? LastDeployedAt { get; set; }
         public string VersionKeyName { get; set; }
         public string Project { get; set; }
     }
