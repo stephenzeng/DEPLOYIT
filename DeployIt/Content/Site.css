@@ -31,12 +31,12 @@ textarea {
 }
 
 .site-header {
-    background-color: #ddd;
+    background-color: #dfdfdf;
     color: white;
 }
 
 .site-header a {
-    color: #666;
+    color: #333;
 }
 
 .margin-top-5 {
