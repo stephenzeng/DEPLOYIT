@@ -54,27 +54,23 @@
 @section scripts
 {
     <script type="text/javascript">
-        var copyConfig = function (url) {
+        var copyConfig = function(url) {
             console.log(url);
-            $.ajax({ url: url });
+            $.ajax({
+                url: url,
+                success: function (msg) {
+                    console.log(msg);
+                    $(location).attr('href', '@Url.Action("Index", "Settings")');
+                },
+                error: function(event, xhr, settings) {
+                    displayAlert(xhr.status + ' ' + xhr.statusText);
+                }
+            });
         }
 
         var displayAlert = function(msg) {
             $('#alertDiv').show();
             $('#alertText').text(msg);
         }
-
-        $(document).ajaxSuccess(function (event, xhr, settings) {
-            if (xhr.status == 200) {
-                console.log(200);
-                //window.location.replace('@Html.Action("Index", "Settings")');
-            } else {
-                displayAlert(xhr.status + ' ' + xhr.statusText);
-            }
-        });
-
-        $(document).ajaxError(function (event, xhr, settings) {
-            displayAlert(xhr.status + ' ' + xhr.statusText);
-        });
     </script>
 }
