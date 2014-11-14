@@ -13,7 +13,7 @@ namespace DeployIt.Controllers
     {
         public ActionResult Index(int? id)
         {
-            var model = new DeployBuildModel();
+            var request = new DeployRequest();
 
             try
             {
@@ -24,28 +24,32 @@ namespace DeployIt.Controllers
                 if (id.HasValue && id != 0)
                 {
                     var projectConfig = DocumentSession.Load<ProjectConfig>(id);
-                    var buildList = Helper.GetLastBuildList(projectConfig.TfsProjectName, projectConfig.Branch);
+                    var buildList = Helper.GetLastBuildList(projectConfig.TfsProjectName, projectConfig.Branch, 5);
 
                     var webConfig = Path.Combine(projectConfig.DestinationRootLocation,
                         projectConfig.DetinationProjectFolder, "Web.config");
                     var currentVersion = Helper.ReadVersionNumber(webConfig, projectConfig.VersionKeyName);
                     var nextVersion = CalculateNextVersionNumber(currentVersion);
 
-                    model.DestinationRootLocation = projectConfig.DestinationRootLocation;
-                    model.DestinationProjectFolder = projectConfig.DetinationProjectFolder;
-                    model.VersionKeyName = projectConfig.VersionKeyName;
-                    model.CurrentVersion = currentVersion;
-                    model.NextVersion = nextVersion;
-                    model.LastDeployedAt = projectConfig.LastDeployedAt;
+                    request.DestinationRootLocation = projectConfig.DestinationRootLocation;
+                    request.DestinationProjectFolder = projectConfig.DetinationProjectFolder;
+                    request.VersionKeyName = projectConfig.VersionKeyName;
+                    request.CurrentVersion = currentVersion;
+                    request.NextVersion = nextVersion;
+                    request.ProjectName = projectConfig.Name;
                     
                     if (buildList.Any())
                     {
                         var build = buildList.First();
-                        model.BuildDropLocation = build.DropLocation;
-                        model.PublishedWebsiteFolder = projectConfig.SourceSubFolder;
+                        request.BuildDropLocation = build.DropLocation;
+                        request.PublishedWebsiteFolder = projectConfig.SourceSubFolder;
                     }
 
                     ViewBag.LastBuildList = buildList;
+
+                    ViewBag.LastDeploymentList = DocumentSession.Query<DeployRequest>()
+                        .OrderByDescending(d => d.RequestAt)
+                        .Take(5);
                 }
             }
             catch (Exception ex)
@@ -53,7 +57,7 @@ namespace DeployIt.Controllers
                 ShowErrorMessage(ex.Message);
             }
 
-            return View(model);
+            return View(request);
         }
 
         private static string CalculateNextVersionNumber(string versionNumber)

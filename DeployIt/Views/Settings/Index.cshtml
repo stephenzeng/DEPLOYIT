@@ -20,27 +20,27 @@
                     <th>TFS Project Name</th>
                     <th>Branch</th>
                     <th>Project Folder</th>
-                    <th>Last Deployed Time</th>
+                    <th>Version Key</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var build in Model)
+                @foreach (var config in Model)
                 {
                     <tr>
-                        <td>@build.Name</td>
-                        <td>@build.TfsProjectName</td>
-                        <td>@build.Branch</td>
-                        <td>@build.DetinationProjectFolder</td>
-                        <td>@build.LastDeployedAt</td>
+                        <td>@config.Name</td>
+                        <td>@config.TfsProjectName</td>
+                        <td>@config.Branch</td>
+                        <td>@config.DetinationProjectFolder</td>
+                        <td>@config.VersionKeyName</td>
                         <td>
-                            <a href="#" onclick="copyConfig('@Url.Action("Copy", "Settings", new{build.Id}, null)');" title="Copy this settings">
+                            <a href="#" onclick="copyConfig('@Url.Action("Copy", "Settings", new{config.Id}, null)');" title="Copy this settings">
                                 <span class="glyphicon glyphicon-share-alt"></span>
                             </a>
                         </td>
                         <td>
-                            <a href="@Url.Action("Edit", "Settings", new{build.Id}, null)" title="Edit">
+                            <a href="@Url.Action("Edit", "Settings", new{config.Id}, null)" title="Edit">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </a>
                         </td>

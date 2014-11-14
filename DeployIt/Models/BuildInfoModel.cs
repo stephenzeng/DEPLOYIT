@@ -16,8 +16,10 @@ namespace DeployIt.Models
         public string DropLocation { get; set; }
     }
 
-    public class DeployBuildModel
+    public class DeployRequest
     {
+        public int Id { get; set; }
+
         [DisplayName("Last build drop location")]
         public string BuildDropLocation { get; set; }
 
@@ -36,8 +38,10 @@ namespace DeployIt.Models
         [DisplayName("Next version")]
         public string NextVersion { get; set; }
 
-        public DateTime? LastDeployedAt { get; set; }
         public string VersionKeyName { get; set; }
-        public string Project { get; set; }
+        public string ProjectId { get; set; }
+        public DateTime RequestAt { get; set; }
+        public bool DeploySuccess { get; set; }
+        public string ProjectName { get; set; }
     }
 }

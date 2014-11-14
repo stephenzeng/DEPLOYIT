@@ -17,18 +17,23 @@ namespace DeployIt.Controllers
 
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
-        public HttpResponseMessage Post(DeployBuildModel model)
+
+        public HttpResponseMessage Post(DeployRequest request)
         {
             try
             {
-                if (model == null || string.IsNullOrEmpty(model.Project))
+                if (request == null || string.IsNullOrEmpty(request.ProjectId))
                 {
                     NotifyAndLog("Deployment request is rejected because of invalid data");
                     return new HttpResponseMessage(HttpStatusCode.NotAcceptable);
                 }
 
-                NotifyAndLog("Deployment request received for project '{0}'", model.Project);
-                ProcessDeployment(model);
+                request.RequestAt = DateTime.Now;
+
+                NotifyAndLog("Deployment request received for project '{0}'", request.ProjectId);
+                ProcessDeployment(request);
+
+                request.DeploySuccess = true;
 
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
@@ -38,11 +43,17 @@ namespace DeployIt.Controllers
                 NotifyAndLog(ex.StackTrace);
                 //todo: rollback process
 
+                if (request != null) request.DeploySuccess = false;
+
                 return new HttpResponseMessage(HttpStatusCode.ExpectationFailed);
+            }
+            finally
+            {
+                if (request != null) DocumentSession.Store(request);
             }
         }
 
-        private void ProcessDeployment(DeployBuildModel model)
+        private void ProcessDeployment(DeployRequest model)
         {
             //Backup
             var backupFolder = Path.Combine(model.DestinationRootLocation, "_Backup",

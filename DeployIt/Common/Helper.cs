@@ -13,7 +13,7 @@ namespace DeployIt.Common
     {
         static readonly Uri TfsUri = new Uri("http://wptfs08:8080/");
 
-        public static IEnumerable<BuildInfoModel> GetLastBuildList(string tfsProjectName, string branch)
+        public static IEnumerable<BuildInfoModel> GetLastBuildList(string tfsProjectName, string branch, int numberOfResuslts)
         {
             var tfs = new TfsTeamProjectCollection(TfsUri);
 
@@ -22,7 +22,7 @@ namespace DeployIt.Common
             var lastBuildList = buildServer.QueryBuilds(tfsProjectName)
                 .Where(b => b.BuildDefinition.Name == branch)
                 .OrderByDescending(b => b.FinishTime)
-                .Take(10)
+                .Take(numberOfResuslts)
                 .Select(b => new BuildInfoModel()
                 {
                     Project = b.TeamProject,

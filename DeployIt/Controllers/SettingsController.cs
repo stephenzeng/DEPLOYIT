@@ -80,8 +80,7 @@ namespace DeployIt.Controllers
             Mapper.CreateMap<ProjectConfig, ProjectConfig>()
                 .ForMember(s => s.Name, o => o.MapFrom(c => c.Name + " - copy"))
                 .ForMember(s => s.Id, o => o.Ignore())
-                .ForMember(s => s.CreateAt, o => o.Ignore())
-                .ForMember(s => s.LastDeployedAt, o => o.Ignore());
+                .ForMember(s => s.CreateAt, o => o.Ignore());
 
             var config = DocumentSession.Load<ProjectConfig>(id);
             var copy = Mapper.Map<ProjectConfig>(config);
