@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Mvc;
@@ -13,7 +14,8 @@ namespace DeployIt.Controllers
         public ActionResult Index()
         {
             var list = DocumentSession.Query<ProjectConfig>()
-                .OrderByDescending(c => c.Id);
+                .OrderByDescending(c => c.CreateAt)
+                .ToArray();
 
             return View(list);
         }
@@ -30,6 +32,8 @@ namespace DeployIt.Controllers
             try
             {
                 DocumentSession.Store(config);
+                config.CreateAt = DateTime.Now;
+
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -68,8 +72,6 @@ namespace DeployIt.Controllers
             var config = DocumentSession.Load<ProjectConfig>(id);
             DocumentSession.Delete(config);
 
-            throw new InvalidCastException();
-
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
@@ -78,10 +80,12 @@ namespace DeployIt.Controllers
             Mapper.CreateMap<ProjectConfig, ProjectConfig>()
                 .ForMember(s => s.Name, o => o.MapFrom(c => c.Name + " - copy"))
                 .ForMember(s => s.Id, o => o.Ignore())
+                .ForMember(s => s.CreateAt, o => o.Ignore())
                 .ForMember(s => s.LastDeployedAt, o => o.Ignore());
 
             var config = DocumentSession.Load<ProjectConfig>(id);
             var copy = Mapper.Map<ProjectConfig>(config);
+            copy.CreateAt = DateTime.Now;
 
             DocumentSession.Store(copy);
 

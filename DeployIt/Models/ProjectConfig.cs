@@ -13,5 +13,6 @@ namespace DeployIt.Models
         public string DestinationRootLocation { get; set; }
         public string DetinationProjectFolder { get; set; }
         public DateTime? LastDeployedAt { get; set; }
+        public DateTime CreateAt { get; set; }
     }
 }
