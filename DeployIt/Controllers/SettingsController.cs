@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Web.Mvc;
+using AutoMapper;
 using DeployIt.Models;
 using Raven.Client.Linq;
 
@@ -64,21 +65,27 @@ namespace DeployIt.Controllers
         [HttpPost]
         public HttpResponseMessage Delete(int id)
         {
-            try
-            {
-                var config = DocumentSession.Load<ProjectConfig>(id);
-                DocumentSession.Delete(config);
+            var config = DocumentSession.Load<ProjectConfig>(id);
+            DocumentSession.Delete(config);
 
-                return new HttpResponseMessage(HttpStatusCode.OK);
-            }
-            catch (Exception ex)
-            {
-                var response = new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
-                {
-                    Content = new StringContent(ex.Message)
-                };
-                return response;
-            }
+            throw new InvalidCastException();
+
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }
+
+        public HttpResponseMessage Copy(int id)
+        {
+            Mapper.CreateMap<ProjectConfig, ProjectConfig>()
+                .ForMember(s => s.Name, o => o.MapFrom(c => c.Name + " - copy"))
+                .ForMember(s => s.Id, o => o.Ignore())
+                .ForMember(s => s.LastDeployedAt, o => o.Ignore());
+
+            var config = DocumentSession.Load<ProjectConfig>(id);
+            var copy = Mapper.Map<ProjectConfig>(config);
+
+            DocumentSession.Store(copy);
+
+            return new HttpResponseMessage(HttpStatusCode.OK);
         }
     }
 }

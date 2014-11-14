@@ -80,8 +80,29 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" style="width: 100px;">Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="width: 100px;" onclick="deleteConfig(@Model.Id);">Yes</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal" style="width: 100px;">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="resultModalLabel">Result</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <h4>Project '@Model.Name' has been deleted.</h4>
+                    <br/>
+                    <br/>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="width: 100px;" onclick="window.location.href='/settings';">Ok</button>
             </div>
         </div>
     </div>
@@ -90,7 +111,32 @@
 @section scripts
 {
     <script type="text/javascript">
- 
+        var deleteConfig = function (id) {
+            console.log('deleting ' + id);
+            $.ajax({
+                type: 'POST',
+                url: '/settings/delete/' + id
+            });
+        }
+
+        var displayAlert = function (msg) {
+            $('#alertDiv').show();
+            $('#alertText').text(msg);
+        }
+
+        $(document).ajaxSuccess(function (event, xhr, settings) {
+            if (xhr.status == 200) {
+                $('#myModal').modal('hide');
+                $('#resultModal').modal('show');
+            } else {
+                displayAlert(xhr.status + ' ' + xhr.statusText);
+            }
+        });
+
+        $(document).ajaxError(function (event, xhr, settings) {
+            $('#myModal').modal('hide');
+            displayAlert(xhr.status + ' ' + xhr.statusText);
+        });
     </script>
     
 }
