@@ -110,7 +110,61 @@
     </div>
 </div>
 
+@section scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            $(function() {
+                var hub = $.connection.notificationHub;
+                hub.client.broadcast = function(message) {
+                    console.log(message);
+                    $('#logPanel').append('<p>' + message + '</p>');
+                }
 
+                $.connection.hub.logging = true;
+                $.connection.hub.start();
+            });
+
+            var button = $('#submitButton');
+
+            if ($('#project').val() == '') {
+                button.attr('disabled', 'disabled');
+            } else {
+                button.removeAttr("disabled");
+            }
+
+            $(document).on('submit', '#requestForm', function (e) {
+                disableButton();
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: $(this).serialize(),
+                    dataType: 'text json',
+                    cache: false,
+                    success: function(message) {
+                        enableButton();
+                    },
+                    error: function (message) {
+                        console.log('error');
+                        enableButton();
+                    }
+                });
+
+                e.preventDefault();
+            });
+
+            var disableButton = function() {
+                $(button).attr('disabled', 'disabled');
+                $(button).text("Dploying...");
+            }
+
+            var enableButton = function () {
+                $(button).removeAttr("disabled");
+                $(button).text("Deploy the latest build");
+            }
+        });
+    </script>
+}
 
 <div id="logPanel" class="alert console-panel">
 </div>
