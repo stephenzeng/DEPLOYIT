@@ -8,68 +8,109 @@
     var projectList = ViewBag.ProjectList as IEnumerable<ProjectConfig> ?? Enumerable.Empty<ProjectConfig>();
     var lastBuildList = ViewBag.LastBuildList as IEnumerable<BuildInfoModel> ?? Enumerable.Empty<BuildInfoModel>();
     var lastDeploymentList = ViewBag.LastDeploymentList as IEnumerable<DeployRequest> ?? Enumerable.Empty<DeployRequest>();
-    
+
     var redirectPage = string.Format("location.href = '{0}Home/Index/'+this.options[this.selectedIndex].value;", @Url.Content("~/"));
     var currentProjectId = ViewContext.RouteData.Values["id"].ToNullable<int>();
 }
 
-@using (Html.BeginForm("deploy", "api", FormMethod.Post, new {id="requestForm", role = "form", @class = "form-horizontal" }))
-{
-    <div class="form-group">
-        <label class="control-label col-md-3">Project</label>
-        <div class="col-md-3">
-            @Html.DropDownList("projectId", 
-                projectList.Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString(), Selected = p.Id == currentProjectId}), 
-                "Select a project",
-                new { @onchange = redirectPage, @class = "form-control" })
-        </div>
-    </div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Project Deployment Details</div>
+            <div class="panel-body" style="padding-left: 30px;padding-right: 30px;">
+                @using (Html.BeginForm("deploy", "api", FormMethod.Post, new { id = "requestForm", role = "form", @class = "form-horizontal" }))
+                {
+                    <div class="form-group">
+                        <label class="control-label">Project</label>
+                        <div>
+                            @Html.DropDownList("projectId",
+                                projectList.Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString(), Selected = p.Id == currentProjectId }),
+                                "Select a project",
+                                new { @onchange = redirectPage, @class = "form-control" })
+                        </div>
+                    </div>
     
-    <div class="form-group">
-        @Html.LabelFor(m => m.BuildDropLocation, new { @class = "col-md-3 control-label" })
-        <div class="col-md-7">
-            @Html.TextBoxFor(m => m.BuildDropLocation, new { @class = "form-control" })
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.BuildDropLocation, new { @class = "control-label" })
+                        <div>
+                            @Html.TextBoxFor(m => m.BuildDropLocation, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.PublishedWebsiteFolder, new { @class = "control-label" })
+                        <div>
+                            @Html.TextBoxFor(m => m.PublishedWebsiteFolder, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.DestinationRootLocation, new { @class = "control-label" })
+                        <div>
+                            @Html.TextBoxFor(m => m.DestinationRootLocation, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.DestinationProjectFolder, new { @class = "control-label" })
+                        <div>
+                            @Html.TextBoxFor(m => m.DestinationProjectFolder, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.CurrentVersion, new { @class = "control-label" })
+                        <div>
+                            @Html.HiddenFor(m => m.VersionKeyName)
+                            @Html.TextBoxFor(m => m.CurrentVersion, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.NextVersion, new { @class = "control-label" })
+                        <div>
+                            @Html.TextBoxFor(m => m.NextVersion, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <button id="submitButton" type="submit" class="btn btn-primary btn-lg pull-right" style="width: 100%;">
+                                Deploy the latest build
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.PublishedWebsiteFolder, new { @class = "col-md-3 control-label" })
-        <div class="col-md-7">
-            @Html.TextBoxFor(m => m.PublishedWebsiteFolder, new { @class = "form-control" })
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">Lastest deployment history</div>
+            <div class="panel-body">
+                <table class="table table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Build Location</th>
+                            <th>Deployment Time</th>
+                            <th>Dest Folder</th>
+                            <th>Project Folder</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var deployment in lastDeploymentList)
+                        {
+                            <tr>
+                                <td>@deployment.BuildDropLocation</td>
+                                <td>@deployment.RequestAt</td>
+                                <td>@deployment.DestinationRootLocation</td>
+                                <td>@deployment.DestinationProjectFolder</td>
+                                <td>@(deployment.DeploySuccess ? "Succeeded" : "Failed")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.DestinationRootLocation, new { @class = "col-md-3 control-label" })
-        <div class="col-md-7">
-            @Html.TextBoxFor(m => m.DestinationRootLocation, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.DestinationProjectFolder, new { @class = "col-md-3 control-label" })
-        <div class="col-md-7">
-            @Html.TextBoxFor(m => m.DestinationProjectFolder, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.CurrentVersion, new { @class = "col-md-3 control-label" })
-        <div class="col-md-3">
-            @Html.HiddenFor(m => m.VersionKeyName)
-            @Html.TextBoxFor(m => m.CurrentVersion, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.NextVersion, new { @class = "col-md-3 control-label" })
-        <div class="col-md-3">
-            @Html.TextBoxFor(m => m.NextVersion, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-12">
-            <button id="submitButton" type="submit" class="btn btn-primary btn-lg pull-right" style="width: 30%;">
-                Deploy the latest build
-            </button>
-        </div>
-    </div>
-}
+</div>
+
+
 
 <div id="logPanel" class="alert console-panel">
 </div>
@@ -107,36 +148,7 @@
     </div>
 </div>
 
-<div class="panel panel-default">
-    <div class="panel-heading">Lastest deployment history</div>
-    <div class="panel-body">
-        <table class="table table-striped table-condensed">
-            <thead>
-                <tr>
-                    <th>Project</th>
-                    <th>Build Location</th>
-                    <th>Deployment Time</th>
-                    <th>Dest Folder</th>
-                    <th>Dest Project Folder</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var deployment in lastDeploymentList)
-                {
-                    <tr>
-                        <td>@deployment.ProjectName</td>
-                        <td>@deployment.BuildDropLocation</td>
-                        <td>@deployment.RequestAt</td>
-                        <td>@deployment.DestinationRootLocation</td>
-                        <td>@deployment.DestinationProjectFolder</td>
-                        <td>@(deployment.DeploySuccess ? "Succeeded" : "Failed")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+
 
 
 

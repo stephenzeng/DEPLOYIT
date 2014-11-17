@@ -48,6 +48,7 @@ namespace DeployIt.Controllers
                     ViewBag.LastBuildList = buildList;
 
                     ViewBag.LastDeploymentList = DocumentSession.Query<DeployRequest>()
+                        .Where(d => d.ProjectName == projectConfig.Name)
                         .OrderByDescending(d => d.RequestAt)
                         .Take(5);
                 }
