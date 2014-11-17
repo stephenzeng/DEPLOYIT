@@ -39,7 +39,7 @@ namespace DeployIt.Models
         public string NextVersion { get; set; }
 
         public string VersionKeyName { get; set; }
-        public string ProjectId { get; set; }
+        public int ProjectId { get; set; }
         public DateTime RequestAt { get; set; }
         public bool DeploySuccess { get; set; }
         public string ProjectName { get; set; }

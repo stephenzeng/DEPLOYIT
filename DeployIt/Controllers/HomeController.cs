@@ -37,6 +37,7 @@ namespace DeployIt.Controllers
                     request.CurrentVersion = currentVersion;
                     request.NextVersion = nextVersion;
                     request.ProjectName = projectConfig.Name;
+                    request.ProjectId = projectConfig.Id;
                     
                     if (buildList.Any())
                     {
@@ -50,7 +51,7 @@ namespace DeployIt.Controllers
                     ViewBag.LastDeploymentList = DocumentSession.Query<DeployRequest>()
                         .Where(d => d.ProjectName == projectConfig.Name)
                         .OrderByDescending(d => d.RequestAt)
-                        .Take(5);
+                        .Take(10);
                 }
             }
             catch (Exception ex)

@@ -23,10 +23,11 @@
                     <div class="form-group">
                         <label class="control-label">Project</label>
                         <div>
-                            @Html.DropDownList("projectId",
+                            @Html.DropDownListFor(m => m.ProjectId, 
                                 projectList.Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString(), Selected = p.Id == currentProjectId }),
                                 "Select a project",
                                 new { @onchange = redirectPage, @class = "form-control" })
+                            @Html.HiddenFor(m => m.ProjectName)
                         </div>
                     </div>
     
@@ -58,7 +59,7 @@
                         @Html.LabelFor(m => m.CurrentVersion, new { @class = "control-label" })
                         <div>
                             @Html.HiddenFor(m => m.VersionKeyName)
-                            @Html.TextBoxFor(m => m.CurrentVersion, new { @class = "form-control" })
+                            @Html.TextBoxFor(m => m.CurrentVersion, new { @class = "form-control", @readonly = "readonly" })
                         </div>
                     </div>
                     <div class="form-group">
@@ -118,7 +119,7 @@
                 var hub = $.connection.notificationHub;
                 hub.client.broadcast = function(message) {
                     console.log(message);
-                    $('#logPanel').append('<p>' + message + '</p>');
+                    $('#logPanel').append(message);
                 }
 
                 $.connection.hub.logging = true;
@@ -127,14 +128,14 @@
 
             var button = $('#submitButton');
 
-            if ($('#project').val() == '') {
+            if ($('#ProjectId').val() == '') {
                 button.attr('disabled', 'disabled');
             } else {
                 button.removeAttr("disabled");
             }
 
             $(document).on('submit', '#requestForm', function (e) {
-                disableButton();
+                disableControls();
                 $.ajax({
                     url: $(this).attr('action'),
                     type: $(this).attr('method'),
@@ -142,31 +143,33 @@
                     dataType: 'text json',
                     cache: false,
                     success: function(message) {
-                        enableButton();
+                        enableControls();
                     },
                     error: function (message) {
                         console.log('error');
-                        enableButton();
+                        enableControls();
                     }
                 });
 
                 e.preventDefault();
             });
 
-            var disableButton = function() {
+            var disableControls = function() {
                 $(button).attr('disabled', 'disabled');
                 $(button).text("Dploying...");
+                $('#ProjectId').attr('disabled', 'disabled');
             }
 
-            var enableButton = function () {
+            var enableControls = function () {
                 $(button).removeAttr("disabled");
                 $(button).text("Deploy the latest build");
+                $('#ProjectId').removeAttr("disabled");
             }
         });
     </script>
 }
 
-<div id="logPanel" class="alert console-panel">
+<div id="logPanel" class="alert console-panel col-md-12">
 </div>
 
 <div class="panel panel-default">
