@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using DeployIt.Common;
 using DeployIt.Hubs;
 using DeployIt.Models;
@@ -61,6 +62,11 @@ namespace DeployIt.Controllers
 
         private void ProcessDeployment(DeployRequest model)
         {
+            //BroadCastProgress();
+            //Thread.Sleep(5000);
+            //_inProgress = false;
+            //return;
+
             //Backup
             var backupFolder = Path.Combine(model.DestinationRootLocation, "_Backup",
                 string.Format("{0}_{1}", model.DestinationProjectFolder, DateTime.Now.ToString("yyyyMMdd_hhmmss")));
