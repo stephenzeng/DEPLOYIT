@@ -99,18 +99,12 @@ namespace DeployIt.Controllers
 
         private async Task<IEnumerable<T>> GetWebApiAsync<T>(string url)
         {
-            var baseUrl = string.Format("{0}://{1}{2}/", 
-                Request.Url.Scheme, 
-                Request.Url.Authority,
-                Request.ApplicationPath.TrimEnd('/'));
-            //Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/";
+            var baseUrl = Request.Url.GetLeftPart(UriPartial.Authority);
 
-            using (var httpClient = new HttpClient()
+            using(var handler= new HttpClientHandler{UseDefaultCredentials = true })
+            using (var httpClient = new HttpClient(handler){BaseAddress = new Uri(baseUrl)})
             {
-                BaseAddress = new Uri(baseUrl)
-            })
-            {
-                var response = await httpClient.GetStringAsync(url);
+                var response = await httpClient.GetStringAsync(baseUrl + url);
                 return JsonConvert.DeserializeObject<IEnumerable<T>>(response);
             }
         }
