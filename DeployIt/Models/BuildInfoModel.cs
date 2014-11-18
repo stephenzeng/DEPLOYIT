@@ -16,6 +16,15 @@ namespace DeployIt.Models
         public string DropLocation { get; set; }
     }
 
+    public class QueuedBuildInfoModel
+    {
+        public string TeamProject { get; set; }
+        public string BuildNumber { get; set; }
+        public string RequestedFor { get; set; }
+        public QueueStatus Status { get; set; }
+        public DateTime QueueTime { get; set; }
+    }
+
     public class DeployRequest
     {
         public int Id { get; set; }

@@ -1,43 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Xml;
-using DeployIt.Models;
-using Microsoft.TeamFoundation.Build.Client;
-using Microsoft.TeamFoundation.Client;
-using Raven.Client;
 
 namespace DeployIt.Common
 {
     public static class Helper
     {
-        static readonly Uri TfsUri = new Uri("http://wptfs08:8080/");
-
-        public static IEnumerable<BuildInfoModel> GetLastBuildList(string tfsProjectName, string branch, int numberOfResuslts)
-        {
-            var tfs = new TfsTeamProjectCollection(TfsUri);
-
-            var buildServer = tfs.GetService<IBuildServer>();
-
-            var lastBuildList = buildServer.QueryBuilds(tfsProjectName)
-                .Where(b => b.BuildDefinition.Name == branch)
-                .OrderByDescending(b => b.FinishTime)
-                .Take(numberOfResuslts)
-                .Select(b => new BuildInfoModel()
-                {
-                    Project = b.TeamProject,
-                    Branch = b.BuildDefinition.Name,
-                    BuildNumber = b.BuildNumber,
-                    Status = b.Status,
-                    FinishTime = b.FinishTime,
-                    RequestedBy = b.RequestedFor,
-                    Changeset = b.SourceGetVersion,
-                    DropLocation = b.DropLocation,
-                });
-
-            return lastBuildList;
-        }
-
         public static string ReadVersionNumber(string configFile, string versionKeyName)
         {
             var xmlDoc = new XmlDocument();

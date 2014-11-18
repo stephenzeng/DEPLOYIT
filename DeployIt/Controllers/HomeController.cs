@@ -1,30 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Xml;
 using DeployIt.Common;
 using DeployIt.Models;
-using Microsoft.VisualBasic.FileIO;
+using Newtonsoft.Json;
 
 namespace DeployIt.Controllers
 {
     public class HomeController : BaseController
     {
-        public ActionResult Index(int? id)
+        public async Task<ActionResult> Index(int? id)
         {
             var request = new DeployRequest();
 
             try
             {
                 var projects = DocumentSession.Query<ProjectConfig>().OrderBy(c => c.Name);
-
                 ViewBag.ProjectList = projects;
 
                 if (id.HasValue && id != 0)
                 {
                     var projectConfig = DocumentSession.Load<ProjectConfig>(id);
-                    var buildList = Helper.GetLastBuildList(projectConfig.TfsProjectName, projectConfig.Branch, 5);
+                    var buildList = await GetBuildList(projectConfig.TfsProjectName, projectConfig.Branch);
+                    ViewBag.LastBuildList = buildList;
 
                     var webConfig = Path.Combine(projectConfig.DestinationRootLocation,
                         projectConfig.DetinationProjectFolder, "Web.config");
@@ -46,12 +48,12 @@ namespace DeployIt.Controllers
                         request.PublishedWebsiteFolder = projectConfig.SourceSubFolder;
                     }
 
-                    ViewBag.LastBuildList = buildList;
-
                     ViewBag.LastDeploymentList = DocumentSession.Query<DeployRequest>()
                         .Where(d => d.ProjectName == projectConfig.Name)
                         .OrderByDescending(d => d.RequestAt)
-                        .Take(7);
+                        .Take(5);
+
+                    ViewBag.QueuedBuildList = await GetQueuedBuildList(projectConfig.TfsProjectName);
                 }
             }
             catch (Exception ex)
@@ -62,12 +64,55 @@ namespace DeployIt.Controllers
             return View(request);
         }
 
+        private async Task<IEnumerable<BuildInfoModel>> GetBuildList(string tfsProjectName, string branch)
+        {
+            var url = Url.HttpRouteUrl("DefaultApi",
+                new
+                {
+                    controller = "Tfs",
+                    tfsProjectName = tfsProjectName,
+                    branch = branch
+                });
+
+            return await GetWebApiAsync<BuildInfoModel>(url);
+        }
+
+        private async Task<IEnumerable<QueuedBuildInfoModel>> GetQueuedBuildList(string tfsProjectName)
+        {
+            var url = Url.HttpRouteUrl("DefaultApi",
+                new
+                {
+                    controller = "Tfs",
+                    tfsProjectName = tfsProjectName,
+                });
+
+            return await GetWebApiAsync<QueuedBuildInfoModel>(url);
+        }
+
         private static string CalculateNextVersionNumber(string versionNumber)
         {
             var numbers = versionNumber.Split('.').Select(int.Parse).ToArray();
             numbers[numbers.Count() - 1] += 1;
 
             return string.Join(".", numbers);
+        }
+
+        private async Task<IEnumerable<T>> GetWebApiAsync<T>(string url)
+        {
+            var baseUrl = string.Format("{0}://{1}{2}/", 
+                Request.Url.Scheme, 
+                Request.Url.Authority,
+                Request.ApplicationPath.TrimEnd('/'));
+            //Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/";
+
+            using (var httpClient = new HttpClient()
+            {
+                BaseAddress = new Uri(baseUrl)
+            })
+            {
+                var response = await httpClient.GetStringAsync(url);
+                return JsonConvert.DeserializeObject<IEnumerable<T>>(response);
+            }
         }
     }
 }
