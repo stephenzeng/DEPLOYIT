@@ -24,52 +24,58 @@
             <div class="panel-body" style="padding-left: 30px;padding-right: 30px;">
                 @using (Html.BeginForm("deploy", "api", FormMethod.Post, new { id = "requestForm", role = "form", @class = "form-horizontal" }))
                 {
+                    @Html.HiddenFor(m => m.Id)
+                    @Html.HiddenFor(m => m.ProjectName)
+
                     <div class="form-group">
-                        <label class="control-label">Project</label>
-                        <div>
-                            @Html.DropDownListFor(m => m.ProjectId, 
-                                projectList.Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString(), Selected = p.Id == currentProjectId }),
-                                "Select a project",
-                                new { @onchange = redirectPage, @class = "form-control" })
-                            @Html.HiddenFor(m => m.ProjectName)
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Select a project <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                @foreach (var p in projectList)
+                                {
+                                    <li>@Html.ActionLink(p.Name, "Index", "Home", new{@id=p.Id}, null)</li>
+                                }
+                            </ul>
                         </div>
                     </div>
     
                     <div class="form-group">
-                        @Html.LabelFor(m => m.BuildDropLocation, new { @class = "control-label" })
+                        @Html.LabelFor(m => m.BuildDropLocation, new { @class = "control-label", @for = "buildDropLocation" })
                         <div>
-                            @Html.TextBoxFor(m => m.BuildDropLocation, new { @class = "form-control" })
+                            @Html.TextBoxFor(m => m.BuildDropLocation, new { @class = "form-control", id = "buildDropLocation" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.PublishedWebsiteFolder, new { @class = "control-label" })
+                        @Html.LabelFor(m => m.PublishedWebsiteFolder, new { @class = "control-label", @for = "PublishedWebsiteFolder" })
                         <div>
-                            @Html.TextBoxFor(m => m.PublishedWebsiteFolder, new { @class = "form-control" })
+                            @Html.TextBoxFor(m => m.PublishedWebsiteFolder, new { @class = "form-control", id = "PublishedWebsiteFolder" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.DestinationRootLocation, new { @class = "control-label" })
+                        @Html.LabelFor(m => m.DestinationRootLocation, new { @class = "control-label", @for = "DestinationRootLocation" })
                         <div>
-                            @Html.TextBoxFor(m => m.DestinationRootLocation, new { @class = "form-control" })
+                            @Html.TextBoxFor(m => m.DestinationRootLocation, new { @class = "form-control", id = "DestinationRootLocation" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.DestinationProjectFolder, new { @class = "control-label" })
+                        @Html.LabelFor(m => m.DestinationProjectFolder, new { @class = "control-label", @for = "DestinationProjectFolder" })
                         <div>
-                            @Html.TextBoxFor(m => m.DestinationProjectFolder, new { @class = "form-control" })
+                            @Html.TextBoxFor(m => m.DestinationProjectFolder, new { @class = "form-control", id = "DestinationProjectFolder" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.CurrentVersion, new { @class = "control-label" })
+                        @Html.LabelFor(m => m.CurrentVersion, new { @class = "control-label", @for = "CurrentVersion" })
                         <div>
                             @Html.HiddenFor(m => m.VersionKeyName)
-                            @Html.TextBoxFor(m => m.CurrentVersion, new { @class = "form-control", @readonly = "readonly" })
+                            @Html.TextBoxFor(m => m.CurrentVersion, new { @class = "form-control", @readonly = "readonly", id = "CurrentVersion" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.NextVersion, new { @class = "control-label" })
+                        @Html.LabelFor(m => m.NextVersion, new { @class = "control-label", @for = "NextVersion" })
                         <div>
-                            @Html.TextBoxFor(m => m.NextVersion, new { @class = "form-control" })
+                            @Html.TextBoxFor(m => m.NextVersion, new { @class = "form-control", id = "NextVersion" })
                         </div>
                     </div>
                     <div class="form-group">
