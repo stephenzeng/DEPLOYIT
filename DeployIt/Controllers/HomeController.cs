@@ -30,7 +30,8 @@ namespace DeployIt.Controllers
 
                     var webConfig = Path.Combine(projectConfig.DestinationRootLocation,
                         projectConfig.DetinationProjectFolder, "Web.config");
-                    var currentVersion = Helper.ReadVersionNumber(webConfig, projectConfig.VersionKeyName);
+                    //var currentVersion = Helper.ReadVersionNumber(webConfig, projectConfig.VersionKeyName);
+                    var currentVersion = "1.0.0";
                     var nextVersion = CalculateNextVersionNumber(currentVersion);
 
                     request.DestinationRootLocation = projectConfig.DestinationRootLocation;
@@ -99,6 +100,8 @@ namespace DeployIt.Controllers
 
         private async Task<IEnumerable<T>> GetWebApiAsync<T>(string url)
         {
+            return await Task.FromResult(Enumerable.Empty<T>());
+
             var baseUrl = Request.Url.GetLeftPart(UriPartial.Authority);
 
             using(var handler= new HttpClientHandler{UseDefaultCredentials = true })

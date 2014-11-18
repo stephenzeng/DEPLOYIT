@@ -30,12 +30,19 @@
                     <div class="form-group">
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                Select a project <span class="caret"></span>
+                                @(currentProjectId == null ? "Select a project" : Model.ProjectName) <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
                                 @foreach (var p in projectList)
                                 {
-                                    <li>@Html.ActionLink(p.Name, "Index", "Home", new{@id=p.Id}, null)</li>
+                                    if (p.Id == currentProjectId)
+                                    {
+                                        <li class="disabledLink">@p.Name</li>
+                                    }
+                                    else
+                                    {
+                                        <li>@Html.ActionLink(p.Name, "Index", "Home", new{@id=p.Id}, null)</li>
+                                    }
                                 }
                             </ul>
                         </div>

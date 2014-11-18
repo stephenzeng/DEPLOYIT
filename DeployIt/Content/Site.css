@@ -80,3 +80,10 @@ div .console-panel {
     color: greenyellow;
 }
 
+.disabledLink {
+    padding: 3px 20px;
+    display: block;
+    color: lightgray;
+    clear: both;
+    white-space: nowrap;
+}
