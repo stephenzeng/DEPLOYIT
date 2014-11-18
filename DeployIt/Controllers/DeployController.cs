@@ -2,11 +2,11 @@
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using DeployIt.Common;
 using DeployIt.Hubs;
 using DeployIt.Models;
 using Microsoft.VisualBasic.FileIO;
+using Tasks = System.Threading.Tasks;
 
 namespace DeployIt.Controllers
 {
@@ -21,7 +21,7 @@ namespace DeployIt.Controllers
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        public HttpResponseMessage Post(DeployRequest request)
+        public async Tasks.Task<HttpResponseMessage> Post(DeployRequest request)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace DeployIt.Controllers
                 request.RequestAt = DateTime.Now;
 
                 NotifyAndLog("<p>Deployment request received for project <span class='yellow'>{0}</span>.</p>", request.ProjectName);
-                ProcessDeployment(request);
+                await ProcessDeployment(request);
 
                 request.DeploySuccess = true;
                 DocumentSession.Store(request);
@@ -60,58 +60,59 @@ namespace DeployIt.Controllers
             }
         }
 
-        private void ProcessDeployment(DeployRequest model)
+        private async Tasks.Task ProcessDeployment(DeployRequest request)
         {
-            //BroadCastProgress();
-            //Thread.Sleep(10000);
-            //_inProgress = false;
-            //return;
-
             //Backup
-            var backupFolder = Path.Combine(model.DestinationRootLocation, "_Backup",
-                string.Format("{0}_{1}", model.DestinationProjectFolder, DateTime.Now.ToString("yyyyMMdd_hhmmss")));
-            var projectPath = Path.Combine(model.DestinationRootLocation, model.DestinationProjectFolder);
+            var backupFolder = Path.Combine(request.DestinationRootLocation, "_Backup",
+                string.Format("{0}_{1}", request.DestinationProjectFolder, DateTime.Now.ToString("yyyyMMdd_hhmmss")));
+            var projectPath = Path.Combine(request.DestinationRootLocation, request.DestinationProjectFolder);
 
-            NotifyAndLog("<p>Backup process started.<p/>", projectPath, backupFolder);
-            NotifyAndLog("<p>Copying folder <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> <p/>", projectPath, backupFolder);
-            BroadCastProgress();
-            FileSystem.CopyDirectory(projectPath, backupFolder);
-            _inProgress = false;
+            await BackupTask(projectPath, backupFolder).WithNotifyProgress(BroadcastProgress);
 
-            //Copy files to project folder
-            var source = Path.Combine(model.BuildDropLocation, model.PublishedWebsiteFolder);
-
-            NotifyAndLog("<p>Deploying files from folder <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> </p>", source, projectPath);
-            BroadCastProgress();
-            FileSystem.CopyDirectory(source, projectPath, true);
-            _inProgress = false;
+            //Deployment
+            await DeploymentTask(request, projectPath).WithNotifyProgress(BroadcastProgress);
 
             //copy web.config
             var sourceConfig = Path.Combine(backupFolder, "Web.config");
             var destConfig = Path.Combine(projectPath, "Web.config");
 
-            NotifyAndLog("<p>Copying <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> </p>", sourceConfig, destConfig);
-            FileSystem.CopyFile(sourceConfig, destConfig, true);
+            await CopyConfigFileTask(sourceConfig, destConfig).WithNotifyProgress(BroadcastProgress);
 
             //update version number
-            NotifyAndLog("<p>Update application version number [{0}] to <span class='yellow'>{1}</span> </p>", model.VersionKeyName, model.NextVersion);
-            Helper.SetVersionNumber(destConfig, model.VersionKeyName, model.NextVersion);
+            await UpdateVersionNumberTask(destConfig, request.VersionKeyName, request.NextVersion);
 
             NotifyAndLog("<p class='greenyellow'>Deployment process completed!</p>");
         }
 
-        private void BroadCastProgress()
+        private Tasks.Task UpdateVersionNumberTask(string destConfig, string versionKeyName, string value)
         {
-            _inProgress = true;
+            NotifyAndLog("<p>Update application version number [{0}] to <span class='yellow'>{1}</span> </p>", versionKeyName, value);
 
-            System.Threading.Tasks.Task.Run(async () =>
-            {
-                while (_inProgress)
-                {
-                    await System.Threading.Tasks.Task.Delay(1000);
-                    Broadcast(". ");
-                }
-            });
+            return Tasks.Task.Run(() => Helper.SetVersionNumber(destConfig, versionKeyName, value));
+        }
+
+        private Tasks.Task CopyConfigFileTask(string sourceConfig, string destConfig)
+        {
+            NotifyAndLog("<p>Copying <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> </p>", sourceConfig, destConfig);
+            return Tasks.Task.Run(() => FileSystem.CopyFile(sourceConfig, destConfig, true));
+        }
+
+        private Tasks.Task DeploymentTask(DeployRequest model, string projectPath)
+        {
+            var source = Path.Combine(model.BuildDropLocation, model.PublishedWebsiteFolder);
+            NotifyAndLog("<p>Deploying files from folder <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> </p>", source,
+                projectPath);
+
+            return Tasks.Task.Run(() => FileSystem.CopyDirectory(source, projectPath, true));
+        }
+
+        private Tasks.Task BackupTask(string projectPath, string backupFolder)
+        {
+            NotifyAndLog("<p>Backup process started.<p/>", projectPath, backupFolder);
+            NotifyAndLog("<p>Copying folder <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> <p/>",
+                projectPath, backupFolder);
+
+            return Tasks.Task.Run(() => FileSystem.CopyDirectory(projectPath, backupFolder));
         }
 
         private void NotifyAndLog(string message, params object[] args)
@@ -126,5 +127,12 @@ namespace DeployIt.Controllers
                 Description = text,
             });
         }
+
+        private void BroadcastProgress()
+        {
+            Broadcast(". ");
+        }
     }
+
+    
 }

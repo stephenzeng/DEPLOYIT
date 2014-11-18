@@ -1,3 +1,6 @@
+using System.Threading.Tasks;
+using Antlr.Runtime.Misc;
+
 namespace DeployIt.Common
 {
     public static class Extensions
@@ -15,6 +18,22 @@ namespace DeployIt.Common
             }
             
             return default(T?);
+        }
+
+        public static Task WithNotifyProgress(this Task task, Action progressAction)
+        {
+            var finished = false;
+            task.ContinueWith(c => Task.Run(() => finished = true));
+            var progressTask = Task.Run(async () =>
+            {
+                while (!finished)
+                {
+                    await Task.Delay(1000);
+                    progressAction();
+                }
+            });
+
+            return Task.WhenAll(task, progressTask);
         }
     }
 }
