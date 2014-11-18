@@ -78,9 +78,11 @@ textarea {
 
 div .console-panel {
     background-color: black;
-    color: white;
+    color: #f1f1f1;
     border: 0;
     padding: 25px;
+    font-size: 12px;
+    font-family: monospace;
 }
 
 .red {

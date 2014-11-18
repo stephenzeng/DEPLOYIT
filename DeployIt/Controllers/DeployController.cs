@@ -62,10 +62,10 @@ namespace DeployIt.Controllers
 
         private void ProcessDeployment(DeployRequest model)
         {
-            //BroadCastProgress();
-            //Thread.Sleep(5000);
-            //_inProgress = false;
-            //return;
+            BroadCastProgress();
+            Thread.Sleep(10000);
+            _inProgress = false;
+            return;
 
             //Backup
             var backupFolder = Path.Combine(model.DestinationRootLocation, "_Backup",
