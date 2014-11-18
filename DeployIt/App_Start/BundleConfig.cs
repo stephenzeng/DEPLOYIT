@@ -20,10 +20,6 @@ namespace DeployIt
             bundles.Add(new ScriptBundle("~/bundles/signalR").Include(
                         "~/Scripts/jquery.signalR-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/spinner").Include(
-                        "~/Scripts/ladda.js",
-                        "~/Scripts/spin.js"));
-
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
@@ -34,7 +30,7 @@ namespace DeployIt
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/site.css",
                 "~/Content/bootstrap.css",
-                "~/Content/ladda-themeless.css"
+                "~/Content/font-awesome.css"
                 ));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(

@@ -43,6 +43,19 @@ textarea {
     margin-top: 5px;
 }
 
+.margin-top-25 {
+    margin-top: 25px;
+}
+
+
+.margin-bottom-5 {
+    margin-bottom: 5px;
+}
+
+.margin-bottom-15 {
+    margin-bottom: 15px;
+}
+
 .spinner {
   display: inline-block;
   opacity: 0;
@@ -67,4 +80,18 @@ div .console-panel {
     background-color: black;
     color: white;
     border: 0;
+    padding: 25px;
 }
+
+.red {
+    color: red;
+}
+
+.yellow {
+    color: yellow;
+}
+
+.greenyellow {
+    color: greenyellow;
+}
+

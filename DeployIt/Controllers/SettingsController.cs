@@ -75,7 +75,7 @@ namespace DeployIt.Controllers
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        public HttpResponseMessage Copy(int id)
+        public int Copy(int id)
         {
             Mapper.CreateMap<ProjectConfig, ProjectConfig>()
                 .ForMember(s => s.Name, o => o.MapFrom(c => c.Name + " - copy"))
@@ -88,7 +88,7 @@ namespace DeployIt.Controllers
 
             DocumentSession.Store(copy);
 
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            return copy.Id;
         }
     }
 }

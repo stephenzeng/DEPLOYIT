@@ -2,11 +2,9 @@
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using DeployIt.Common;
 using DeployIt.Hubs;
 using DeployIt.Models;
-using Microsoft.TeamFoundation.Client.Reporting;
 using Microsoft.VisualBasic.FileIO;
 
 namespace DeployIt.Controllers
@@ -28,13 +26,13 @@ namespace DeployIt.Controllers
             {
                 if (request == null || request.ProjectId > 0)
                 {
-                    NotifyAndLog("Deployment request is rejected because of invalid data");
+                    NotifyAndLog("<p class='red'>Deployment request is rejected because of invalid data. </p>");
                     return new HttpResponseMessage(HttpStatusCode.NotAcceptable);
                 }
 
                 request.RequestAt = DateTime.Now;
 
-                NotifyAndLog("Deployment request received for project '{0}'", request.ProjectName);
+                NotifyAndLog("<p>Deployment request received for project <span class='yellow'>{0}</span>.</p>", request.ProjectName);
                 ProcessDeployment(request);
 
                 request.DeploySuccess = true;
@@ -44,8 +42,11 @@ namespace DeployIt.Controllers
             }
             catch (Exception ex)
             {
-                NotifyAndLog(ex.Message);
-                NotifyAndLog(ex.StackTrace);
+                _inProgress = false;
+
+                NotifyAndLog("<p class='red'>{0} </p>", ex.Message);
+                NotifyAndLog("<p class='red'>{0} </p>", ex.StackTrace);
+                NotifyAndLog("<p class='red'>Deployment failed! </p>", ex.StackTrace);
                 //todo: rollback process
 
                 if (request != null)
@@ -65,7 +66,8 @@ namespace DeployIt.Controllers
                 string.Format("{0}_{1}", model.DestinationProjectFolder, DateTime.Now.ToString("yyyyMMdd_hhmmss")));
             var projectPath = Path.Combine(model.DestinationRootLocation, model.DestinationProjectFolder);
 
-            NotifyAndLog("<p>Copying folder {0} to {1} <p/>", projectPath, backupFolder);
+            NotifyAndLog("<p>Backup process started.<p/>", projectPath, backupFolder);
+            NotifyAndLog("<p>Copying folder <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> <p/>", projectPath, backupFolder);
             BroadCastProgress();
             FileSystem.CopyDirectory(projectPath, backupFolder);
             _inProgress = false;
@@ -73,7 +75,7 @@ namespace DeployIt.Controllers
             //Copy files to project folder
             var source = Path.Combine(model.BuildDropLocation, model.PublishedWebsiteFolder);
 
-            NotifyAndLog("<p>Deploying files from folder {0} to {1} </p>", source, projectPath);
+            NotifyAndLog("<p>Deploying files from folder <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> </p>", source, projectPath);
             BroadCastProgress();
             FileSystem.CopyDirectory(source, projectPath, true);
             _inProgress = false;
@@ -82,25 +84,25 @@ namespace DeployIt.Controllers
             var sourceConfig = Path.Combine(backupFolder, "Web.config");
             var destConfig = Path.Combine(projectPath, "Web.config");
 
-            NotifyAndLog("<p>Copying {0} to {1} </p>", sourceConfig, destConfig);
-            BroadCastProgress();
+            NotifyAndLog("<p>Copying <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> </p>", sourceConfig, destConfig);
             FileSystem.CopyFile(sourceConfig, destConfig, true);
-            _inProgress = false;
 
             //update version number
-            NotifyAndLog("<p>Update application version number [{0}] to {1} </p>", model.VersionKeyName, model.NextVersion);
+            NotifyAndLog("<p>Update application version number [{0}] to <span class='yellow'>{1}</span> </p>", model.VersionKeyName, model.NextVersion);
             Helper.SetVersionNumber(destConfig, model.VersionKeyName, model.NextVersion);
 
-            NotifyAndLog("Deployment process completed");
+            NotifyAndLog("<p class='greenyellow'>Deployment process completed!</p>");
         }
 
         private void BroadCastProgress()
         {
-            System.Threading.Tasks.Task.Run(() =>
+            _inProgress = true;
+
+            System.Threading.Tasks.Task.Run(async () =>
             {
                 while (_inProgress)
                 {
-                    Thread.Sleep(1000);
+                    await System.Threading.Tasks.Task.Delay(1000);
                     Broadcast(". ");
                 }
             });

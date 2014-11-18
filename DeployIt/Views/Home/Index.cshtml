@@ -3,7 +3,7 @@
 @model DeployRequest
 
 @{
-    ViewBag.Title = "Home";
+    ViewBag.Title = "";
 
     var projectList = ViewBag.ProjectList as IEnumerable<ProjectConfig> ?? Enumerable.Empty<ProjectConfig>();
     var lastBuildList = ViewBag.LastBuildList as IEnumerable<BuildInfoModel> ?? Enumerable.Empty<BuildInfoModel>();
@@ -89,7 +89,6 @@
                             <th>Build Location</th>
                             <th>Deployment Time</th>
                             <th>Dest Folder</th>
-                            <th>Project Folder</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -99,8 +98,7 @@
                             <tr>
                                 <td>@deployment.BuildDropLocation</td>
                                 <td>@deployment.RequestAt</td>
-                                <td>@deployment.DestinationRootLocation</td>
-                                <td>@deployment.DestinationProjectFolder</td>
+                                <td>@deployment.DestinationRootLocation @deployment.DestinationProjectFolder</td>
                                 <td>@(deployment.DeploySuccess ? "Succeeded" : "Failed")</td>
                             </tr>
                         }
@@ -111,13 +109,53 @@
     </div>
 </div>
 
+<div id="logPanel" class="console-panel margin-bottom-15">
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Lastest build history</div>
+    <div class="panel-body">
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Branch</th>
+                    <th>Build Number</th>
+                    <th>Status</th>
+                    <th>Finish Time</th>
+                    <th>Requested By</th>
+                    <th>Changeset</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var build in lastBuildList)
+                {
+                    <tr>
+                        <td>@build.Project</td>
+                        <td>@build.Branch</td>
+                        <td>@build.BuildNumber</td>
+                        <td>@build.Status</td>
+                        <td>@build.FinishTime</td>
+                        <td>@build.RequestedBy</td>
+                        <td>@build.Changeset</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
 @section scripts
 {
     <script type="text/javascript">
         $(function() {
             $(function() {
                 var hub = $.connection.notificationHub;
-                hub.client.broadcast = function(message) {
+                hub.client.broadcast = function (message) {
+                    if ($('#logPanel').css('display') == 'none') {
+                        $('#logPanel').show('slow');
+                    }
+
                     console.log(message);
                     $('#logPanel').append(message);
                 }
@@ -130,8 +168,10 @@
 
             if ($('#ProjectId').val() == '') {
                 button.attr('disabled', 'disabled');
+                $('#logPanel').hide();
             } else {
                 button.removeAttr("disabled");
+                $('#logPanel').hide();
             }
 
             $(document).on('submit', '#requestForm', function (e) {
@@ -168,42 +208,6 @@
         });
     </script>
 }
-
-<div id="logPanel" class="alert console-panel col-md-12">
-</div>
-
-<div class="panel panel-default">
-    <div class="panel-heading">Lastest build history</div>
-    <div class="panel-body">
-        <table class="table table-striped table-condensed">
-            <thead>
-                <tr>
-                    <th>Project</th>
-                    <th>Branch</th>
-                    <th>Build Number</th>
-                    <th>Status</th>
-                    <th>Finish Time</th>
-                    <th>Requested By</th>
-                    <th>Changeset</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var build in lastBuildList)
-                {
-                    <tr>
-                        <td>@build.Project</td>
-                        <td>@build.Branch</td>
-                        <td>@build.BuildNumber</td>
-                        <td>@build.Status</td>
-                        <td>@build.FinishTime</td>
-                        <td>@build.RequestedBy</td>
-                        <td>@build.Changeset</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
 
 
 

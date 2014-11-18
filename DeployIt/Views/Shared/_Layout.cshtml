@@ -17,14 +17,14 @@
                     <span class="icon-bar"></span>
                 </button>
                 <span class="navbar-brand">
-                    <span class="glyphicon glyphicon-time"></span>
+                    <span class="fa fa-smile-o"></span>
                     DEPLOYIT
                 </span>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav pull-right">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Settings", "Index", "Settings")</li>
+                    <li>@Html.ActionLink("Home", "Index", "Home", null, new{@class="fa fa-home"})</li>
+                    <li>@Html.ActionLink("Settings", "Index", "Settings", null, new{@class="fa fa-cog"})</li>
                 </ul>
             </div>
         </div>
@@ -36,8 +36,9 @@
                 <a href="#" class="close" data-dismiss="alert">&times;</a>
                 <span id="alertText">test</span>
             </div>
-            <h3 class="page-header">@ViewBag.Title</h3>
-            @RenderBody()
+            <div class="margin-top-25">
+                @RenderBody()
+            </div>
         </div>
     </div>
     <footer>
