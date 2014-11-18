@@ -24,7 +24,6 @@
             <div class="panel-body" style="padding-left: 30px;padding-right: 30px;">
                 @using (Html.BeginForm("deploy", "api", FormMethod.Post, new { id = "requestForm", role = "form", @class = "form-horizontal" }))
                 {
-                    @Html.HiddenFor(m => m.Id)
                     @Html.HiddenFor(m => m.ProjectName)
 
                     <div class="form-group">

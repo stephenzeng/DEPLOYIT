@@ -2,6 +2,8 @@
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Web.Http;
 using DeployIt.Common;
 using DeployIt.Hubs;
 using DeployIt.Models;
@@ -12,17 +14,15 @@ namespace DeployIt.Controllers
 {
     public class DeployController : ApiHubController<NotificationHub>
     {
-        bool _inProgress = true;
+        bool _needToRollback = false;
+        private string _backupFolder;
+        private string _projectPath;
 
-        public HttpResponseMessage Get()
-        {
-            NotifyAndLog("Get: The server time is {0}", DateTime.Now);
-
-            return new HttpResponseMessage(HttpStatusCode.OK);
-        }
-
+        [HttpPost]
         public async Tasks.Task<HttpResponseMessage> Post(DeployRequest request)
         {
+            var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+
             try
             {
                 if (request == null || request.ProjectId > 0)
@@ -39,42 +39,58 @@ namespace DeployIt.Controllers
                 request.DeploySuccess = true;
                 DocumentSession.Store(request);
 
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                return responseMessage;
             }
             catch (Exception ex)
             {
-                _inProgress = false;
+                responseMessage.StatusCode = HttpStatusCode.ExpectationFailed;
 
                 NotifyAndLog("<p class='red'>{0} </p>", ex.Message);
                 NotifyAndLog("<p class='red'>{0} </p>", ex.StackTrace);
                 NotifyAndLog("<p class='red'>Deployment failed! </p>", ex.StackTrace);
-                //todo: rollback process
 
                 if (request != null)
                 {
                     request.DeploySuccess = false;
                     DocumentSession.Store(request);
                 }
-
-                return new HttpResponseMessage(HttpStatusCode.ExpectationFailed);
             }
+
+            if (!_needToRollback) return responseMessage;
+
+            try
+            {
+                await RollbackTask(_backupFolder, _projectPath).WithNotifyProgress(BroadcastProgress);
+            }
+            catch (Exception ex)
+            {
+                responseMessage.StatusCode = HttpStatusCode.ExpectationFailed;
+
+                NotifyAndLog("<p class='red'>{0} </p>", ex.Message);
+                NotifyAndLog("<p class='red'>{0} </p>", ex.StackTrace);
+                NotifyAndLog("<p class='red'>Rollback failed! </p>", ex.StackTrace);
+            }
+
+            return responseMessage;
         }
 
         private async Tasks.Task ProcessDeployment(DeployRequest request)
         {
             //Backup
-            var backupFolder = Path.Combine(request.DestinationRootLocation, "_Backup",
+            _backupFolder = Path.Combine(request.DestinationRootLocation, "_Backup",
                 string.Format("{0}_{1}", request.DestinationProjectFolder, DateTime.Now.ToString("yyyyMMdd_hhmmss")));
-            var projectPath = Path.Combine(request.DestinationRootLocation, request.DestinationProjectFolder);
+            _projectPath = Path.Combine(request.DestinationRootLocation, request.DestinationProjectFolder);
 
-            await BackupTask(projectPath, backupFolder).WithNotifyProgress(BroadcastProgress);
+            await BackupTask(_projectPath, _backupFolder).WithNotifyProgress(BroadcastProgress);
 
             //Deployment
-            await DeploymentTask(request, projectPath).WithNotifyProgress(BroadcastProgress);
+            await DeploymentTask(request, _projectPath).WithNotifyProgress(BroadcastProgress);
+
+            _needToRollback = true;
 
             //copy web.config
-            var sourceConfig = Path.Combine(backupFolder, "Web.config");
-            var destConfig = Path.Combine(projectPath, "Web.config");
+            var sourceConfig = Path.Combine(_backupFolder, "Web.config");
+            var destConfig = Path.Combine(_projectPath, "Web.config");
 
             await CopyConfigFileTask(sourceConfig, destConfig).WithNotifyProgress(BroadcastProgress);
 
@@ -87,7 +103,6 @@ namespace DeployIt.Controllers
         private Tasks.Task UpdateVersionNumberTask(string destConfig, string versionKeyName, string value)
         {
             NotifyAndLog("<p>Update application version number [{0}] to <span class='yellow'>{1}</span> </p>", versionKeyName, value);
-
             return Tasks.Task.Run(() => Helper.SetVersionNumber(destConfig, versionKeyName, value));
         }
 
@@ -102,17 +117,25 @@ namespace DeployIt.Controllers
             var source = Path.Combine(model.BuildDropLocation, model.PublishedWebsiteFolder);
             NotifyAndLog("<p>Deploying files from folder <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> </p>", source,
                 projectPath);
-
             return Tasks.Task.Run(() => FileSystem.CopyDirectory(source, projectPath, true));
         }
 
         private Tasks.Task BackupTask(string projectPath, string backupFolder)
         {
-            NotifyAndLog("<p>Backup process started.<p/>", projectPath, backupFolder);
+            NotifyAndLog("<p>Backup process started.<p/>");
             NotifyAndLog("<p>Copying folder <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> <p/>",
                 projectPath, backupFolder);
 
             return Tasks.Task.Run(() => FileSystem.CopyDirectory(projectPath, backupFolder));
+        }
+
+        private Tasks.Task RollbackTask(string backupFolder, string projectPath)
+        {
+            NotifyAndLog("<p>Rollback process started.<p/>");
+            NotifyAndLog("<p>Copying folder <span class='yellow'>{0}</span> to <span class='yellow'>{1}</span> <p/>",
+                backupFolder, projectPath);
+
+            return Tasks.Task.Run(() => FileSystem.CopyDirectory(backupFolder, projectPath, true));
         }
 
         private void NotifyAndLog(string message, params object[] args)
@@ -133,6 +156,4 @@ namespace DeployIt.Controllers
             Broadcast(". ");
         }
     }
-
-    
 }
