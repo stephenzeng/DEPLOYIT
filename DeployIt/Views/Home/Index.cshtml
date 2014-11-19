@@ -28,7 +28,7 @@
                     <div class="form-group">
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                @(currentProjectId == null ? "Select a project" : Model.ProjectName) <span class="caret"></span>
+                                <strong>@(currentProjectId == null ? "Select a project" : Model.ProjectName)</strong> <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
                                 @foreach (var p in projectList)
