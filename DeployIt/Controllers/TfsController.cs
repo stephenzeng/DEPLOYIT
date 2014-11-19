@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using DeployIt.Hubs;
 using DeployIt.Models;
@@ -14,7 +15,7 @@ namespace DeployIt.Controllers
 
         public TfsController()
         {
-            var tfsUri = new Uri("http://wptfs08:8080/");
+            var tfsUri = new Uri(ConfigurationManager.AppSettings["TfsUrl"]);
             var tfs = new TfsTeamProjectCollection(tfsUri);
             _buildServer = tfs.GetService<IBuildServer>();
         }
