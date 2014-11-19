@@ -4,53 +4,61 @@
     ViewBag.Title = "Add project deployment settings";
 }
 
-@using (Html.BeginForm("Add", "Settings", FormMethod.Post, new { role = "form", @class = "form-horizontal" }))
-{
-    <div class="form-group">
-        @Html.LabelFor(m => m.Name, new { @class = "col-md-3 control-label" })
-        <div class="col-md-3">
-            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
-        </div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="fa fa-tags"></span> 
+        New project
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.TfsProjectName, new { @class = "col-md-3 control-label" })
-        <div class="col-md-3">
-            @Html.TextBoxFor(m => m.TfsProjectName, new { @class = "form-control" })
-        </div>
+    <div class="panel-body">
+        @using (Html.BeginForm("Add", "Settings", FormMethod.Post, new { role = "form", @class = "form-horizontal" }))
+        {
+            <div class="form-group">
+                @Html.LabelFor(m => m.Name, new { @class = "col-md-3 control-label" })
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.TfsProjectName, new { @class = "col-md-3 control-label" })
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.TfsProjectName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Branch, new { @class = "col-md-3 control-label" })
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.Branch, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.SourceSubFolder, new { @class = "col-md-3 control-label" })
+                <div class="col-md-7">
+                    @Html.TextBoxFor(m => m.SourceSubFolder, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.DestinationRootLocation, new { @class = "col-md-3 control-label" })
+                <div class="col-md-7">
+                    @Html.TextBoxFor(m => m.DestinationRootLocation, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.DetinationProjectFolder, new { @class = "col-md-3 control-label" })
+                <div class="col-md-7">
+                    @Html.TextBoxFor(m => m.DetinationProjectFolder, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.VersionKeyName, new { @class = "col-md-3 control-label" })
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.VersionKeyName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group" style="margin-top: 50px;">
+                <div class="col-md-offset-3 col-sm-10">
+                    <button type="submit" class="btn btn-default" style="width: 150px;">Submit</button>
+                </div>
+            </div>
+        }
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Branch, new { @class = "col-md-3 control-label" })
-        <div class="col-md-3">
-            @Html.TextBoxFor(m => m.Branch, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.SourceSubFolder, new { @class = "col-md-3 control-label" })
-        <div class="col-md-7">
-            @Html.TextBoxFor(m => m.SourceSubFolder, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.DestinationRootLocation, new { @class = "col-md-3 control-label" })
-        <div class="col-md-7">
-            @Html.TextBoxFor(m => m.DestinationRootLocation, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.DetinationProjectFolder, new { @class = "col-md-3 control-label" })
-        <div class="col-md-7">
-            @Html.TextBoxFor(m => m.DetinationProjectFolder, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.VersionKeyName, new { @class = "col-md-3 control-label" })
-        <div class="col-md-3">
-            @Html.TextBoxFor(m => m.VersionKeyName, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group" style="margin-top: 50px;">
-        <div class="col-md-offset-3 col-sm-10">
-            <button type="submit" class="btn btn-default" style="width: 150px;">Submit</button>
-        </div>
-    </div>
-}
+</div>
