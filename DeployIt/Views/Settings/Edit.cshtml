@@ -1,7 +1,7 @@
 ﻿@model DeployIt.Models.ProjectConfig
 
 @{
-    ViewBag.Title = "Edit a project deployment settings";
+    ViewBag.Title = "Edit project deployment settings";
 }
 
 @using (Html.BeginForm("Edit", "Settings", FormMethod.Post, new { role = "form", @class = "form-horizontal" }))
@@ -51,7 +51,7 @@
     </div>
     <div class="form-group" style="margin-top: 50px;">
         <div class="col-md-offset-3 col-md-7">
-            <button type="submit" class="btn btn-primary" style="width: 150px;">Edit</button>
+            <button type="submit" class="btn btn-default" style="width: 150px;">Edit</button>
             
             <button id="deleteButton" data-toggle="modal" data-target="#myModal" type="button" class="btn btn-danger pull-right" style="width: 150px;">Delete!</button>
         </div>
@@ -64,14 +64,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">Confirm</h4>
+                <span class="modal-title" id="myModalLabel">Confirm</span>
             </div>
             <div class="modal-body">
-                <p>
-                    <h4 style="color: red;">Are you sure you want to delete settings for project '@Model.Name'?</h4>
+                    <span style="color: red;">Are you sure you want to delete settings for project '@Model.Name'?</span>
                     <br/>
                     <br/>
-                </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" style="width: 100px;" onclick="deleteConfig(@Model.Id);">Yes</button>
@@ -86,14 +84,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="resultModalLabel">Result</h4>
+                <span class="modal-title" id="resultModalLabel">Result</span>
             </div>
             <div class="modal-body">
-                <p>
-                    <h4>Project '@Model.Name' has been deleted.</h4>
+                    <span>Project '@Model.Name' has been deleted.</span>
                     <br/>
                     <br/>
-                </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" style="width: 100px;" onclick="window.location.href='@Url.Action("Index")';">Ok</button>

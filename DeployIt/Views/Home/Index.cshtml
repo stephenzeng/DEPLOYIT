@@ -3,14 +3,13 @@
 @model DeployRequest
 
 @{
-    ViewBag.Title = "";
+    ViewBag.Title = "Home";
 
     var projectList = ViewBag.ProjectList as IEnumerable<ProjectConfig> ?? Enumerable.Empty<ProjectConfig>();
     var lastBuildList = ViewBag.LastBuildList as IEnumerable<BuildInfoModel> ?? Enumerable.Empty<BuildInfoModel>();
     var lastDeploymentList = ViewBag.LastDeploymentList as IEnumerable<DeployRequest> ?? Enumerable.Empty<DeployRequest>();
     var queuedBuildList = ViewBag.QueuedBuildList as IEnumerable<QueuedBuildInfoModel> ?? Enumerable.Empty<QueuedBuildInfoModel>();
 
-    var redirectPage = string.Format("location.href = '{0}Home/Index/'+this.options[this.selectedIndex].value;", @Url.Content("~/"));
     var currentProjectId = ViewContext.RouteData.Values["id"].ToNullable<int>();
 }
 
@@ -48,40 +47,40 @@
                     </div>
     
                     <div class="form-group">
-                        @Html.LabelFor(m => m.BuildDropLocation, new { @class = "control-label", @for = "buildDropLocation" })
+                        @Html.LabelFor(m => m.BuildDropLocation, new { @class = "control-label" })
                         <div>
-                            @Html.TextBoxFor(m => m.BuildDropLocation, new { @class = "form-control", id = "buildDropLocation" })
+                            @Html.TextBoxFor(m => m.BuildDropLocation, new { @class = "form-control"})
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.PublishedWebsiteFolder, new { @class = "control-label", @for = "PublishedWebsiteFolder" })
+                        @Html.LabelFor(m => m.PublishedWebsiteFolder, new { @class = "control-label"})
                         <div>
-                            @Html.TextBoxFor(m => m.PublishedWebsiteFolder, new { @class = "form-control", id = "PublishedWebsiteFolder" })
+                            @Html.TextBoxFor(m => m.PublishedWebsiteFolder, new { @class = "form-control"})
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.DestinationRootLocation, new { @class = "control-label", @for = "DestinationRootLocation" })
+                        @Html.LabelFor(m => m.DestinationRootLocation, new { @class = "control-label" })
                         <div>
-                            @Html.TextBoxFor(m => m.DestinationRootLocation, new { @class = "form-control", id = "DestinationRootLocation" })
+                            @Html.TextBoxFor(m => m.DestinationRootLocation, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.DestinationProjectFolder, new { @class = "control-label", @for = "DestinationProjectFolder" })
+                        @Html.LabelFor(m => m.DestinationProjectFolder, new { @class = "control-label" })
                         <div>
-                            @Html.TextBoxFor(m => m.DestinationProjectFolder, new { @class = "form-control", id = "DestinationProjectFolder" })
+                            @Html.TextBoxFor(m => m.DestinationProjectFolder, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.CurrentVersion, new { @class = "control-label", @for = "CurrentVersion" })
+                        @Html.LabelFor(m => m.CurrentVersion, new { @class = "control-label" })
                         <div>
                             @Html.HiddenFor(m => m.VersionKeyName)
-                            @Html.TextBoxFor(m => m.CurrentVersion, new { @class = "form-control", @readonly = "readonly", id = "CurrentVersion" })
+                            @Html.TextBoxFor(m => m.CurrentVersion, new { @class = "form-control", @readonly = "readonly" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(m => m.NextVersion, new { @class = "control-label", @for = "NextVersion" })
+                        @Html.LabelFor(m => m.NextVersion, new { @class = "control-label" })
                         <div>
-                            @Html.TextBoxFor(m => m.NextVersion, new { @class = "form-control", id = "NextVersion" })
+                            @Html.TextBoxFor(m => m.NextVersion, new { @class = "form-control"})
                         </div>
                     </div>
                     <div class="form-group">
@@ -99,10 +98,11 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="fa fa-tags"></span> 
-                @Model.ProjectName Lastest Deployment History
+                @Model.ProjectName Recent Deployment History
             </div>
             <div class="panel-body">
-                <table class="table table-striped table-condensed margin-bottom-0">
+                <table class="table table-striped table-condensed margin-bottom-0" 
+                    summary="This table lists the recent deployment history records for project @Model.ProjectName">
                     <thead>
                         <tr>
                             <th>Build Location</th>
@@ -129,10 +129,11 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="fa fa-tags"></span> 
-                @Model.ProjectName TFS Lastest Build History
+                @Model.ProjectName TFS Recent Build History
             </div>
             <div class="panel-body">
-                <table class="table table-striped table-condensed margin-bottom-0">
+                <table class="table table-striped table-condensed margin-bottom-0"
+                    summary="This table lists the recent build history records for project @Model.ProjectName">
                     <thead>
                         <tr>
                             <th>Branch</th>
@@ -164,7 +165,8 @@
                 @Model.ProjectName TFS Build Queue
             </div>
             <div class="panel-body">
-                <table class="table table-striped table-condensed margin-bottom-0">
+                <table class="table table-striped table-condensed margin-bottom-0"
+                    summary="This table lists the current queued builds in TFS queue for project @Model.ProjectName">
                     <thead>
                         <tr>
                             <th>Build Number</th>
