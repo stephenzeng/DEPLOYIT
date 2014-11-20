@@ -17,9 +17,9 @@ namespace DeployIt.Controllers
             get { return _lazy.Value; }
         }
         
-        protected void Broadcast(string message)
+        protected void Broadcast(string name, string message)
         {
-            HubContext.Clients.All.broadcast(message);
+            HubContext.Clients.All.broadcast(name, message);
         }
 
         protected override void Initialize(HttpControllerContext controllerContext)

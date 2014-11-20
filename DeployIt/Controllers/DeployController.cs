@@ -17,6 +17,7 @@ namespace DeployIt.Controllers
         bool _needToRollback = false;
         private string _backupFolder;
         private string _projectPath;
+        private string _projectName = string.Empty;
 
         [HttpPost]
         public async Tasks.Task<HttpResponseMessage> Post(DeployRequest request)
@@ -32,6 +33,7 @@ namespace DeployIt.Controllers
                 }
 
                 request.RequestAt = DateTime.Now;
+                _projectName = request.ProjectName;
 
                 NotifyAndLog("<p>Deployment request received for project <span class='yellow'>{0}</span>.</p>", request.ProjectName);
                 await ProcessDeployment(request);
@@ -142,7 +144,7 @@ namespace DeployIt.Controllers
         {
             var text = string.Format(message, args);
 
-            Broadcast(text);
+            Broadcast(_projectName, text);
             DocumentSession.Store(new DeploymentLog
             {
                 User = User.Identity.Name,
@@ -153,7 +155,7 @@ namespace DeployIt.Controllers
 
         private void BroadcastProgress()
         {
-            Broadcast(". ");
+            Broadcast(_projectName, ". ");
         }
     }
 }
