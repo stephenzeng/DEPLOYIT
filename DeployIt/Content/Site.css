@@ -8,10 +8,6 @@ footer {
     font-size: 12px;
 }
 
-footer p {
-    opacity: 0.5;
-}
-
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
