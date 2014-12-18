@@ -6,7 +6,7 @@ $(function () {
         hub.client.broadcast = function (name, message) {
             if ($('#logPanel').css('display') == 'none') {
                 $('#logPanel').show('slow');
-                $('#logPanel').append('Project ' + name + 'is being deployed.');
+                $('#logPanel').append('Project ' + name + ' is being deployed.');
             }
 
             console.log(name + ': ' + message);

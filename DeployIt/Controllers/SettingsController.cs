@@ -29,6 +29,12 @@ namespace DeployIt.Controllers
         [HttpPost]
         public ActionResult Add(ProjectConfig config)
         {
+            if (!ModelState.IsValid)
+            {
+                ShowErrorMessage("The data received is invalid.");
+                return View(config);
+            }
+
             try
             {
                 DocumentSession.Store(config);
@@ -53,6 +59,12 @@ namespace DeployIt.Controllers
         [HttpPost]
         public ActionResult Edit(ProjectConfig config)
         {
+            if (!ModelState.IsValid)
+            {
+                ShowErrorMessage("The data received is invalid.");
+                return View(config);
+            }
+
             try
             {
                 DocumentSession.Store(config);

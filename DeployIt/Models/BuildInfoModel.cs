@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.TeamFoundation.Build.Client;
 
 namespace DeployIt.Models
@@ -30,21 +31,26 @@ namespace DeployIt.Models
         public int Id { get; set; }
 
         [DisplayName("Last build drop location")]
+        [Required]
         public string BuildDropLocation { get; set; }
 
         [DisplayName("Website build drop folder")]
+        [Required]
         public string PublishedWebsiteFolder { get; set; }
 
         [DisplayName("Destination location")]
+        [Required]
         public string DestinationRootLocation { get; set; }
 
         [DisplayName("Destination project folder")]
+        [Required]
         public string DestinationProjectFolder { get; set; }
 
         [DisplayName("Current version")]
         public string CurrentVersion { get; set; }
 
         [DisplayName("Next version")]
+        [Required]
         public string NextVersion { get; set; }
 
         public string VersionKeyName { get; set; }

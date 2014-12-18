@@ -3,6 +3,15 @@
     padding-bottom: 20px;
 }
 
+footer {
+    font-family: Tahoma;
+    font-size: 12px;
+}
+
+footer p {
+    opacity: 0.5;
+}
+
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
@@ -19,13 +28,24 @@
 .field-validation-error {
     display: block;
     color: red;
-    margin: 10px;
-    font-size: 18px;
+    font-size: 12px;
+    margin-top: 5px;
+    margin-bottom: -5px;
 }
 
 .site-header {
     background-color: #dfdfdf;
     color: #444;
+    border-bottom: 1px solid #c6c6c6!important;
+}
+
+.site-brand {
+    font-family: "Arial Black", Tahoma, Geneva, sans-serif;
+
+}
+
+.site-brand-color {
+    color: #00cc33;
 }
 
 .site-header a {

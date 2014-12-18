@@ -1,6 +1,8 @@
-﻿@using DeployIt.Common
+﻿@model DeployRequest
+
+@using DeployIt.Common
 @using DeployIt.Models
-@model DeployRequest
+
 
 @{
     ViewBag.Title = "Home";
@@ -50,24 +52,28 @@
                         @Html.LabelFor(m => m.BuildDropLocation, new { @class = "control-label" })
                         <div>
                             @Html.TextBoxFor(m => m.BuildDropLocation, new { @class = "form-control"})
+                            @Html.ValidationMessageFor(m => m.BuildDropLocation)
                         </div>
                     </div>
                     <div class="form-group">
                         @Html.LabelFor(m => m.PublishedWebsiteFolder, new { @class = "control-label"})
                         <div>
                             @Html.TextBoxFor(m => m.PublishedWebsiteFolder, new { @class = "form-control"})
+                            @Html.ValidationMessageFor(m => m.PublishedWebsiteFolder)
                         </div>
                     </div>
                     <div class="form-group">
                         @Html.LabelFor(m => m.DestinationRootLocation, new { @class = "control-label" })
                         <div>
                             @Html.TextBoxFor(m => m.DestinationRootLocation, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.DestinationRootLocation)
                         </div>
                     </div>
                     <div class="form-group">
                         @Html.LabelFor(m => m.DestinationProjectFolder, new { @class = "control-label" })
                         <div>
                             @Html.TextBoxFor(m => m.DestinationProjectFolder, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.DestinationProjectFolder)
                         </div>
                     </div>
                     <div class="form-group">
@@ -81,6 +87,7 @@
                         @Html.LabelFor(m => m.NextVersion, new { @class = "control-label" })
                         <div>
                             @Html.TextBoxFor(m => m.NextVersion, new { @class = "form-control"})
+                            @Html.ValidationMessageFor(m => m.NextVersion)
                         </div>
                     </div>
                     <div class="form-group">

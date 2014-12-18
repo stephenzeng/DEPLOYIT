@@ -16,42 +16,49 @@
                 @Html.LabelFor(m => m.Name, new { @class = "col-md-3 control-label" })
                 <div class="col-md-3">
                     @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Name)
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(m => m.TfsProjectName, new { @class = "col-md-3 control-label" })
                 <div class="col-md-3">
                     @Html.TextBoxFor(m => m.TfsProjectName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.TfsProjectName)
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(m => m.Branch, new { @class = "col-md-3 control-label" })
                 <div class="col-md-3">
                     @Html.TextBoxFor(m => m.Branch, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Branch)
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(m => m.SourceSubFolder, new { @class = "col-md-3 control-label" })
                 <div class="col-md-7">
                     @Html.TextBoxFor(m => m.SourceSubFolder, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.SourceSubFolder)
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(m => m.DestinationRootLocation, new { @class = "col-md-3 control-label" })
                 <div class="col-md-7">
                     @Html.TextBoxFor(m => m.DestinationRootLocation, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.DestinationRootLocation)
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(m => m.DetinationProjectFolder, new { @class = "col-md-3 control-label" })
                 <div class="col-md-7">
                     @Html.TextBoxFor(m => m.DetinationProjectFolder, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.DetinationProjectFolder)
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(m => m.VersionKeyName, new { @class = "col-md-3 control-label" })
                 <div class="col-md-3">
                     @Html.TextBoxFor(m => m.VersionKeyName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.VersionKeyName)
                 </div>
             </div>
             <div class="form-group" style="margin-top: 50px;">

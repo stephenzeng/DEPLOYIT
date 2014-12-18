@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var year = DateTime.Now.Year;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -16,8 +20,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <span class="navbar-brand" style="font-family: Tahoma, Geneva, sans-serif; font-weight: bolder;">
-                    <a href="@Url.Action("Index", "Home")" >DEPLOYIT</a>
+                <span class="navbar-brand site-brand">
+                    <a href="@Url.Action("Index", "Home")" >DEPLOY<span class="site-brand-color">I</span>T</a>
                 </span>
             </div>
             <div class="navbar-collapse collapse">
@@ -39,16 +43,22 @@
                 <a href="#" class="close" data-dismiss="alert">&times;</a>
                 <span id="alertText">test</span>
             </div>
-            <h1>@ViewBag.Title</h1>
             <div class="margin-top-25">
                 @RenderBody()
             </div>
         </div>
     </div>
-    <footer>
-    </footer>
+<footer>
+    <hr/>
+    <p class="text-center">
+        <span class="site-brand">DEPLOY<span class="site-brand-color">I</span>T &copy; @year</span>
+        <br/>
+        zeng.stephen@gmail.com
+    </p>
+</footer>
 
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/signalR")
     <script type="text/javascript" src="~/signalr/hubs"></script>

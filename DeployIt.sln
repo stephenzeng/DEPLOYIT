@@ -8,6 +8,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{426B90
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "NotifyWebService", "NotifyWebService\", "{4997D1E4-6E1E-4203-85BD-20F2424914E5}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
+		Debug.AspNetCompiler.VirtualPath = "/NotifyWebService"
+		Debug.AspNetCompiler.PhysicalPath = "NotifyWebService\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\NotifyWebService\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/NotifyWebService"
+		Release.AspNetCompiler.PhysicalPath = "NotifyWebService\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\NotifyWebService\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "41630"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +45,12 @@ Global
 		{1C58C297-FA10-4200-9B05-12D64599F26E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1C58C297-FA10-4200-9B05-12D64599F26E}.Release|x64.ActiveCfg = Release|x64
 		{1C58C297-FA10-4200-9B05-12D64599F26E}.Release|x64.Build.0 = Release|x64
+		{4997D1E4-6E1E-4203-85BD-20F2424914E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4997D1E4-6E1E-4203-85BD-20F2424914E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4997D1E4-6E1E-4203-85BD-20F2424914E5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4997D1E4-6E1E-4203-85BD-20F2424914E5}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{4997D1E4-6E1E-4203-85BD-20F2424914E5}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{4997D1E4-6E1E-4203-85BD-20F2424914E5}.Release|x64.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
